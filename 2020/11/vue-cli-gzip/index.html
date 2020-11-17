@@ -59,16 +59,16 @@
   <meta name="description" content="最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。">
 <meta name="keywords" content="web开发,gzip,网站优化,webpack,image-webpack-loader,compression-webpack-plugin,vue-cli">
 <meta property="og:type" content="article">
-<meta property="og:title" content="给Vue项目添加图片压缩，gzip等">
+<meta property="og:title" content="Vue项目优化 - 图片压缩，Gzip，懒加载">
 <meta property="og:url" content="http://wuweijun.cn/2020/11/vue-cli-gzip/index.html">
 <meta property="og:site_name" content="La Isla Bonita">
 <meta property="og:description" content="最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/wwwjun/img/202020201116110405.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/wwwjun/img/2020/20201117140428.png">
-<meta property="og:updated_time" content="2020-11-17T06:12:14.131Z">
+<meta property="og:updated_time" content="2020-11-17T11:55:35.535Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="给Vue项目添加图片压缩，gzip等">
+<meta name="twitter:title" content="Vue项目优化 - 图片压缩，Gzip，懒加载">
 <meta name="twitter:description" content="最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。">
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/wwwjun/img/202020201116110405.png">
   <link rel="canonical" href="http://wuweijun.cn/2020/11/vue-cli-gzip/">
@@ -85,7 +85,7 @@
   };
 </script>
 
-  <title>给Vue项目添加图片压缩，gzip等 | La Isla Bonita</title>
+  <title>Vue项目优化 - 图片压缩，Gzip，懒加载 | La Isla Bonita</title>
   
 
 
@@ -277,7 +277,7 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">给Vue项目添加图片压缩，gzip等
+          <h1 class="post-title" itemprop="name headline">Vue项目优化 - 图片压缩，Gzip，懒加载
 
             
           </h1>
@@ -305,7 +305,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-17 14:12:14" itemprop="dateModified" datetime="2020-11-17T14:12:14+08:00">2020-11-17</time>
+                <time title="修改时间：2020-11-17 19:55:35" itemprop="dateModified" datetime="2020-11-17T19:55:35+08:00">2020-11-17</time>
               </span>
             
           
@@ -347,7 +347,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>3k</span>
+              <span>2.9k</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -372,7 +372,6 @@
       
         <p>最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。</p>
 <a id="more"></a>
-
 <h2 id="手动压缩图片"><a href="#手动压缩图片" class="headerlink" title="手动压缩图片"></a>手动压缩图片</h2><p>​        如果选择手动压缩的话，建议不是私密的图片可以选择在线压缩，因为好多本地软件可能都是需要收费的，倒腾破解比较折腾，还不如直接选择在线压缩，免费便捷。</p>
 <p>​        在线压缩图片网站： </p>
 <ol>
@@ -381,14 +380,14 @@
 <li><p><a href="https://tinypng.com/" target="_blank" rel="noopener">https://tinypng.com/</a></p>
 </li>
 </ol>
-<h2 id="添加插件，流程控制自动化压缩"><a href="#添加插件，流程控制自动化压缩" class="headerlink" title="添加插件，流程控制自动化压缩"></a>添加插件，流程控制自动化压缩</h2><h3 id="image-webpack-loader-插件-压缩图片"><a href="#image-webpack-loader-插件-压缩图片" class="headerlink" title="image-webpack-loader 插件 压缩图片"></a>image-webpack-loader 插件 压缩图片</h3><p>​    这个是直接压缩图片的</p>
+<h2 id="添加插件，流程控制自动化压缩"><a href="#添加插件，流程控制自动化压缩" class="headerlink" title="添加插件，流程控制自动化压缩"></a>添加插件，流程控制自动化压缩</h2><pre><code>### image-webpack-loader 插件 压缩图片</code></pre><p>​    这个是直接压缩图片的</p>
 <p>​    安装： </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add image-webpack-loader</span><br></pre></td></tr></table></figure>
 
 <p>​    注意和URL-loader 以及file-loader的使用：可以查看官网<a href="https://github.com/tcoopman/image-webpack-loader" target="_blank" rel="noopener">https://github.com/tcoopman/image-webpack-loader</a></p>
 <p>​    官网说是在file-loader后使用：</p>
 <p>​    安装完成后简单配置如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">file： vue.config.js</span><br><span class="line">此处省略一堆</span><br><span class="line">chainWebpack: (config)=&gt;&#123;</span><br><span class="line">        ********</span><br><span class="line">        // 开发环境不需要</span><br><span class="line">        if (process.env.NODE_ENV !== &apos;production&apos;) return;</span><br><span class="line">        config.module</span><br><span class="line">            .rule(&apos;images&apos;)</span><br><span class="line">            .test(/\.(png|jpe?g|gif)(\?.*)?$/) //TODO： svg 有点问题 </span><br><span class="line">            .use(&apos;image-webpack-loader&apos;)</span><br><span class="line">            .loader(&apos;image-webpack-loader&apos;)</span><br><span class="line">            .options(&#123;</span><br><span class="line">            bypassOnDebug: true</span><br><span class="line">            &#125;)</span><br><span class="line">            .end();</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">file： vue.config.js</span><br><span class="line">此处省略一堆</span><br><span class="line">chainWebpack: (config)=&gt;&#123;</span><br><span class="line">        ********</span><br><span class="line">        // 开发环境不需要</span><br><span class="line">            .test(/\.(png|jpe?g|gif)(\?.*)?$/) //TODO： svg 有点问题 </span><br><span class="line">            .use(&apos;image-webpack-loader&apos;)</span><br><span class="line">            .loader(&apos;image-webpack-loader&apos;)</span><br><span class="line">            .options(&#123;</span><br><span class="line">            bypassOnDebug: true</span><br><span class="line">            &#125;)</span><br><span class="line">            .end();</span><br></pre></td></tr></table></figure>
 
 <h3 id="添加gzip压缩所有静态资源，compression-webpack-plugin"><a href="#添加gzip压缩所有静态资源，compression-webpack-plugin" class="headerlink" title="添加gzip压缩所有静态资源，compression-webpack-plugin"></a>添加gzip压缩所有静态资源，compression-webpack-plugin</h3><p>​    对图片进行压缩后，你可能需要看看是否开启了gzip压缩，nginx的配置如下：</p>
 <p>​    查看nginx 配置文件：nginx -t 然后打开看一眼有没有配置gzip, 不只是gzip on；这句就行了，需要添加文件类型等参数；详见最后一点 3；</p>
@@ -404,11 +403,13 @@
 <p>压缩后文件大小如下：可以看到gzip压缩50%以上，还是很大的提升。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/wwwjun/img/202020201116110405.png" alt></p>
 <h2 id="部署nginx-开启gzip压缩"><a href="#部署nginx-开启gzip压缩" class="headerlink" title="部署nginx 开启gzip压缩"></a>部署nginx 开启gzip压缩</h2><p>​    一切准备就绪，部署nginx查看效果，nginx配置如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">    //省略其他配置</span><br><span class="line">    gzip  on;</span><br><span class="line">    gzip_static on;</span><br><span class="line">    # 启用gzip压缩的最小文件；小于设置值的文件将不会被压缩</span><br><span class="line">    gzip_min_length 1k;</span><br><span class="line"></span><br><span class="line">    # gzip 压缩级别 1-10</span><br><span class="line">    gzip_comp_level 2;</span><br><span class="line"></span><br><span class="line">    # 进行压缩的文件类型。</span><br><span class="line"></span><br><span class="line">    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;</span><br><span class="line"></span><br><span class="line">    # 是否在http header中添加Vary: Accept-Encoding，建议开启</span><br><span class="line">    gzip_vary on;</span><br><span class="line">    gzip_disable &quot;MSIE [1-6].&quot;;</span><br><span class="line">    //******省略其他配置</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">		//省略其他配置</span><br><span class="line">		gzip  on;</span><br><span class="line">    gzip_static on;</span><br><span class="line">    # 启用gzip压缩的最小文件；小于设置值的文件将不会被压缩</span><br><span class="line">    gzip_min_length 1k;</span><br><span class="line"></span><br><span class="line">    # gzip 压缩级别 1-10</span><br><span class="line">    gzip_comp_level 2;</span><br><span class="line"></span><br><span class="line">    # 进行压缩的文件类型。</span><br><span class="line"></span><br><span class="line">    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;</span><br><span class="line"></span><br><span class="line">    # 是否在http header中添加Vary: Accept-Encoding，建议开启</span><br><span class="line">    gzip_vary on;</span><br><span class="line">    gzip_disable &quot;MSIE [1-6].&quot;;</span><br><span class="line">    //******省略其他配置</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>最后查看打开谷歌浏览器查看效果：</p>
 <p>可以看到文件大小小了很多，而且响应头里面会有gzip相关字段：</p>
 <p><img src="https://cdn.jsdelivr.net/gh/wwwjun/img/2020/20201117140428.png" alt></p>
+<p>懒加载的话使用了现成的库 vue-lazyload, 安装完直接按照官网说明使用即可：</p>
+<p><a href="https://github.com/hilongjw/vue-lazyload" target="_blank" rel="noopener">https://github.com/hilongjw/vue-lazyload</a></p>
 <p>大功告成。</p>
 <h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a href="https://www.jb51.net/article/146413.htm" target="_blank" rel="noopener">https://www.jb51.net/article/146413.htm</a></p>
 <p><a href="https://github.com/tcoopman/image-webpack-loader" target="_blank" rel="noopener">https://github.com/tcoopman/image-webpack-loader</a></p>
@@ -433,7 +434,7 @@
     <strong>本文作者： </strong>Klaus J</li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://wuweijun.cn/2020/11/vue-cli-gzip/" title="给Vue项目添加图片压缩，gzip等">http://wuweijun.cn/2020/11/vue-cli-gzip/</a>
+    <a href="http://wuweijun.cn/2020/11/vue-cli-gzip/" title="Vue项目优化 - 图片压缩，Gzip，懒加载">http://wuweijun.cn/2020/11/vue-cli-gzip/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
@@ -695,7 +696,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#手动压缩图片"><span class="nav-number">1.</span> <span class="nav-text">手动压缩图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加插件，流程控制自动化压缩"><span class="nav-number">2.</span> <span class="nav-text">添加插件，流程控制自动化压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#image-webpack-loader-插件-压缩图片"><span class="nav-number">2.1.</span> <span class="nav-text">image-webpack-loader 插件 压缩图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加gzip压缩所有静态资源，compression-webpack-plugin"><span class="nav-number">2.2.</span> <span class="nav-text">添加gzip压缩所有静态资源，compression-webpack-plugin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署nginx-开启gzip压缩"><span class="nav-number">3.</span> <span class="nav-text">部署nginx 开启gzip压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接："><span class="nav-number">4.</span> <span class="nav-text">参考链接：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#手动压缩图片"><span class="nav-number">1.</span> <span class="nav-text">手动压缩图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加插件，流程控制自动化压缩"><span class="nav-number">2.</span> <span class="nav-text">添加插件，流程控制自动化压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加gzip压缩所有静态资源，compression-webpack-plugin"><span class="nav-number">2.1.</span> <span class="nav-text">添加gzip压缩所有静态资源，compression-webpack-plugin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署nginx-开启gzip压缩"><span class="nav-number">3.</span> <span class="nav-text">部署nginx 开启gzip压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接："><span class="nav-number">4.</span> <span class="nav-text">参考链接：</span></a></li></ol></div>
             
 
           </div>
