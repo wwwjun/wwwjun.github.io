@@ -56,22 +56,19 @@
   };
 </script>
 
-  <meta name="description" content="最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。">
-<meta name="keywords" content="web开发,gzip,网站优化,webpack,image-webpack-loader,compression-webpack-plugin,vue-cli">
+  <meta name="description" content="减小moment.js的体积 一般如果项目引入了moment.js或者引入的某个第三方插件包使用了moment.js， 通常情况下，会全部引入了所有语言包，体积过大，我们需按需引入，只打包我们需要的语言包，默认引入英文。">
+<meta name="keywords" content="web开发,网站优化,webpack,vue-cli,moment,ie11,IE兼容性,ant-design,项目优化,首页加载优化,减少首页体积">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vue项目优化 - 图片压缩，Gzip，懒加载">
-<meta property="og:url" content="http://wuweijun.cn/2020/11/vue-cli-gzip/index.html">
+<meta property="og:title" content="VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积">
+<meta property="og:url" content="http://wuweijun.cn/2020/11/vue-cli-moment-ie11-ant-design/index.html">
 <meta property="og:site_name" content="La Isla Bonita">
-<meta property="og:description" content="最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。">
+<meta property="og:description" content="减小moment.js的体积 一般如果项目引入了moment.js或者引入的某个第三方插件包使用了moment.js， 通常情况下，会全部引入了所有语言包，体积过大，我们需按需引入，只打包我们需要的语言包，默认引入英文。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wwwjun/img/202020201116110405.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wwwjun/img/2020/20201117140428.png">
-<meta property="og:updated_time" content="2020-11-24T03:30:25.874Z">
+<meta property="og:updated_time" content="2020-11-25T10:20:15.914Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Vue项目优化 - 图片压缩，Gzip，懒加载">
-<meta name="twitter:description" content="最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/wwwjun/img/202020201116110405.png">
-  <link rel="canonical" href="http://wuweijun.cn/2020/11/vue-cli-gzip/">
+<meta name="twitter:title" content="VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积">
+<meta name="twitter:description" content="减小moment.js的体积 一般如果项目引入了moment.js或者引入的某个第三方插件包使用了moment.js， 通常情况下，会全部引入了所有语言包，体积过大，我们需按需引入，只打包我们需要的语言包，默认引入英文。">
+  <link rel="canonical" href="http://wuweijun.cn/2020/11/vue-cli-moment-ie11-ant-design/">
 
 
 <script id="page-configurations">
@@ -85,7 +82,7 @@
   };
 </script>
 
-  <title>Vue项目优化 - 图片压缩，Gzip，懒加载 | La Isla Bonita</title>
+  <title>VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积 | La Isla Bonita</title>
   
 
 
@@ -263,7 +260,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wuweijun.cn/2020/11/vue-cli-gzip/">
+    <link itemprop="mainEntityOfPage" href="http://wuweijun.cn/2020/11/vue-cli-moment-ie11-ant-design/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Klaus J">
@@ -277,7 +274,7 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">Vue项目优化 - 图片压缩，Gzip，懒加载
+          <h1 class="post-title" itemprop="name headline">VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积
 
             
           </h1>
@@ -294,19 +291,11 @@
                 
               
 
-              <time title="创建时间：2020-11-16 12:23:33" itemprop="dateCreated datePublished" datetime="2020-11-16T12:23:33+08:00">2020-11-16</time>
+              <time title="创建时间：2020-11-25 18:14:00 / 修改时间：18:20:15" itemprop="dateCreated datePublished" datetime="2020-11-25T18:14:00+08:00">2020-11-25</time>
             </span>
           
             
 
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-24 11:30:25" itemprop="dateModified" datetime="2020-11-24T11:30:25+08:00">2020-11-24</time>
-              </span>
             
           
             <span class="post-meta-item">
@@ -347,7 +336,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>2.9k</span>
+              <span>3.6k</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -370,52 +359,101 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。</p>
+        <p>减小moment.js的体积</p>
+<p>一般如果项目引入了moment.js或者引入的某个第三方插件包使用了moment.js， 通常情况下，会全部引入了所有语言包，体积过大，我们需按需引入，只打包我们需要的语言包，默认引入英文。</p>
 <a id="more"></a>
-<h2 id="手动压缩图片"><a href="#手动压缩图片" class="headerlink" title="手动压缩图片"></a>手动压缩图片</h2><p>​        如果选择手动压缩的话，建议不是私密的图片可以选择在线压缩，因为好多本地软件可能都是需要收费的，倒腾破解比较折腾，还不如直接选择在线压缩，免费便捷。</p>
-<p>​        在线压缩图片网站： </p>
-<ol>
-<li><p><a href="https://docsmall.com/image-compress" target="_blank" rel="noopener">https://docsmall.com/image-compress</a></p>
-</li>
-<li><p><a href="https://tinypng.com/" target="_blank" rel="noopener">https://tinypng.com/</a></p>
-</li>
-</ol>
-<h2 id="添加插件，流程控制自动化压缩"><a href="#添加插件，流程控制自动化压缩" class="headerlink" title="添加插件，流程控制自动化压缩"></a>添加插件，流程控制自动化压缩</h2><h3 id="image-webpack-loader-插件-压缩图片"><a href="#image-webpack-loader-插件-压缩图片" class="headerlink" title="image-webpack-loader 插件 压缩图片"></a>image-webpack-loader 插件 压缩图片</h3><p>​    这个是直接压缩图片的</p>
-<p>​    安装： </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add image-webpack-loader</span><br></pre></td></tr></table></figure>
 
-<p>​    注意和URL-loader 以及file-loader的使用：可以查看官网<a href="https://github.com/tcoopman/image-webpack-loader" target="_blank" rel="noopener">https://github.com/tcoopman/image-webpack-loader</a></p>
-<p>​    官网说是在file-loader后使用：</p>
-<p>​    安装完成后简单配置如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">file： vue.config.js</span><br><span class="line">此处省略一堆</span><br><span class="line">chainWebpack: (config)=&gt;&#123;</span><br><span class="line">        ********</span><br><span class="line">        // 开发环境不需要</span><br><span class="line">            .test(/\.(png|jpe?g|gif)(\?.*)?$/) //TODO： svg 有点问题 </span><br><span class="line">            .use(&apos;image-webpack-loader&apos;)</span><br><span class="line">            .loader(&apos;image-webpack-loader&apos;)</span><br><span class="line">            .options(&#123;</span><br><span class="line">            bypassOnDebug: true</span><br><span class="line">            &#125;)</span><br><span class="line">            .end();</span><br></pre></td></tr></table></figure>
 
-<h3 id="添加gzip压缩所有静态资源，compression-webpack-plugin"><a href="#添加gzip压缩所有静态资源，compression-webpack-plugin" class="headerlink" title="添加gzip压缩所有静态资源，compression-webpack-plugin"></a>添加gzip压缩所有静态资源，compression-webpack-plugin</h3><p>​    对图片进行压缩后，你可能需要看看是否开启了gzip压缩，nginx的配置如下：</p>
-<p>​    查看nginx 配置文件：nginx -t 然后打开看一眼有没有配置gzip, 不只是gzip on；这句就行了，需要添加文件类型等参数；详见最后一点 3；</p>
-<p>如果开启了gzip_static on;需要安装模块ngx_http_gzip_static_module（nginx -V 查看下是否有此模块，可能需要重新编译安装ngin x），可以读取预先压缩好的gz文件，减少请求时的CPU消耗。</p>
-<p>*<u>注意</u>：为了要兼容不支持gzip的浏览器，启用gzip_static模块就必须同时保留原始静态文件和gz文件。这样的话，在有大量静态文件的情况下，将会大大增加磁盘空间。我们可以利用nginx的反向代理功能实现只保留gz文件。*</p>
-<p><strong>前端vue-cli 添加插件compression-webpack-plugin:</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add compression-webpack-plugin</span><br></pre></td></tr></table></figure>
 
-<p>修改配置文件vue.config.js</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//省略****</span><br><span class="line">chainWebpack: (config)=&gt;&#123;</span><br><span class="line">      // 开发环境不需要gzip </span><br><span class="line">      if (process.env.NODE_ENV !== &apos;production&apos;) return;</span><br><span class="line">      config.plugin(&apos;CompressionWebpackPlugin&apos;)</span><br><span class="line">          .use(new CompressionWebpackPlugin(&#123;</span><br><span class="line">              // filename: &apos;[path].gz[query]&apos;,</span><br><span class="line">              algorithm: &apos;gzip&apos;,</span><br><span class="line">              test: productionGzipExtensions,</span><br><span class="line">              threshold: 1024,</span><br><span class="line">              // minRatio: 0.8, </span><br><span class="line">              // deleteOriginalAssets: true  </span><br><span class="line">          &#125;));</span><br><span class="line">      //省略****</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+<p>在vue.config.js中添加配置，</p>
+<pre><code>const webpack = require(&apos;webpack&apos;);
 
-<p>具体配置参数可参考：<a href="https://www.webpackjs.com/plugins/compression-webpack-plugin/" target="_blank" rel="noopener">https://www.webpackjs.com/plugins/compression-webpack-plugin/</a></p>
-<p>压缩后文件大小如下：可以看到gzip压缩50%以上，还是很大的提升。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/wwwjun/img/202020201116110405.png" alt></p>
-<h2 id="部署nginx-开启gzip压缩"><a href="#部署nginx-开启gzip压缩" class="headerlink" title="部署nginx 开启gzip压缩"></a>部署nginx 开启gzip压缩</h2><p>​    一切准备就绪，部署nginx查看效果，nginx配置如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">		//省略其他配置</span><br><span class="line">		gzip  on;</span><br><span class="line">    gzip_static on;</span><br><span class="line">    # 启用gzip压缩的最小文件；小于设置值的文件将不会被压缩</span><br><span class="line">    gzip_min_length 1k;</span><br><span class="line"></span><br><span class="line">    # gzip 压缩级别 1-10</span><br><span class="line">    gzip_comp_level 2;</span><br><span class="line"></span><br><span class="line">    # 进行压缩的文件类型。</span><br><span class="line"></span><br><span class="line">    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;</span><br><span class="line"></span><br><span class="line">    # 是否在http header中添加Vary: Accept-Encoding，建议开启</span><br><span class="line">    gzip_vary on;</span><br><span class="line">    gzip_disable &quot;MSIE [1-6].&quot;;</span><br><span class="line">    //******省略其他配置</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+module.exports = {
+    // ******
+    configureWebpack: {
+        // externals:[&apos;moment&apos;], //项目中引用了moment 不能使用
+        plugins:[
+            new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn/) //减小moment语言包体积
+        ],
+    //省略其他配置*******
+    }
+     //省略其他配置*******
+}</code></pre><p>配置后，只保留了中文</p>
+<p>当然更好的方案是使用现在新的库替代moment，如果情况允许的话，比如：day.js、date-fns；因为有些老的插件，库会依赖moment，因此我们做选择的时候就应该考虑到这点。</p>
+<p>适配IE11 antd IE11下有问题</p>
+<p>我们项目是由我带着分研发小伙伴加外包一起弄的，我的首页比较简单没有引入大型框架，然而我们其他页面引用了，虽然也是按需引入，但是ant-design本身确实存在些问题。</p>
+<p>某些组件，比如manu在 IE下会报错</p>
+<p>[Vue warn]: Error in render: “ReferenceError: “Symbol”未定义”；</p>
+<p>这是由于antd本身写法是基于ES的Symbol，但是我们打包编译没有把这些高级语法转换成浏览器支持的语法，谷歌火狐都支持了该语法但是IE 并没有，所有我们需要使用Babel去转换。</p>
+<p>添加polypill</p>
+<p>看我们的小伙伴是直接在main.js里直接引入了core-js/stable 和 regenerator-runtime/runtime， 也没注释，不够优雅，趁现在有点时间，想改改。</p>
+<pre><code>import &apos;core-js/stable&apos;;
+import &apos;regenerator-runtime/runtime&apos;;</code></pre><p>因为我们使用的是vue的官方脚手架vue-cli，因此去查看官方文档，看到浏览器兼容性这一块，有可配置的项，</p>
+<p><a href="https://cli.vuejs.org/zh/guide/browser-compatibility.html#browserslist" target="_blank" rel="noopener">https://cli.vuejs.org/zh/guide/browser-compatibility.html#browserslist</a></p>
+<p>里面讲得很清楚，我们可以选择配置browserslist， transpileDependencies，polyfills等 有三种方式，根据自身需要去配置：</p>
+<p>如果你想直接转换某些第三方没有转换的依赖，比如我们明确得知道了and的包语法需要转译，因此我们可以直接添加配置：</p>
+<p>transpileDependencies</p>
+<ul>
+<li>Type: Array&lt;string | RegExp&gt;</li>
+<li>Default: []<br>默认情况下 babel-loader 会忽略所有 node_modules 中的文件。如果你想要通过 Babel 显式转译一个依赖，可以在这个选项中列出来。</li>
+</ul>
+<pre><code>module.exports = {
+    // babel polyfill  适配IE11
+    transpileDependencies: [
+        &apos;@ant-design&apos;,
+        &apos;ant-design-vue&apos;
+    ],
+  //******
+}</code></pre><p>这样我们在IE下就不会报错了，已经进行了polyfill。</p>
+<p>ant-design 的 icons/lib 包全量引入了，还没处理成功</p>
+<p>按照antd官网的issue讨论的结果去尝试了下，没成功🤦‍♂️</p>
+<p><a href="https://github.com/ant-design/ant-design/issues/12011" target="_blank" rel="noopener">https://github.com/ant-design/ant-design/issues/12011</a></p>
+<p><a href="https://github.com/ant-design/ant-design/issues/26371" target="_blank" rel="noopener">https://github.com/ant-design/ant-design/issues/26371</a></p>
+<p><a href="https://stackoverflow.com/questions/48721290/ant-design-huge-imports" target="_blank" rel="noopener">https://stackoverflow.com/questions/48721290/ant-design-huge-imports</a></p>
+<p>按照各位网友提供的新建了个icons.js export { }</p>
+<p>然后配置了别名指向，一直报没有该模块，奇怪，不过我使用的ant-design-vue，没有使用ant-design, 只是也会去引用@ant-design/icons；</p>
+<pre><code>module.exports = {
+  //...
+  resolve: {
+    alias: {
+      &quot;@ant-design/icons/lib/dist$&quot;: path.resolve(__dirname, &quot;./src/icons.js&quot;)
+    }
+  }
+};</code></pre><p>感觉是ant-design-vue的问题，它的官网也写了，</p>
+<p>更多讨论可参考：#10353。</p>
+<p>⚠️ 1.2.0 之后我们全量引入了所有图标，导致 ant-design-vue 默认的包体积有一定增加，我们会在不远的未来增加新的 API 来实现图标的按需使用，更多相关讨论可关注：#12011。在此之前，你可以通过来自社区同学的 webpack 插件将图标文件拆分。</p>
+<p>然后试了下 这个推荐的插件，原理也只是拆分包而已，并没有减小体积；但也没成功，竟然报react的antd包不存在🤦‍♂️，请求暂停～</p>
+<p>现在还有另外两条路，降低版本，或者等待升级版本。坑 体积大了好几百K，gzip也多了147k。</p>
+<p>拆分包，减小首页加载体积</p>
+<p>一般的，我们开发的时候就已经根据不同的模块拆分不同的包，路由懒加载等，vue-cli提供了便捷的方式，只需我们在配置路由的时候动态引入：</p>
+<p>路由懒加载</p>
+<pre><code>{
+  path: &apos;/模块a/home&apos;,
+  name: &apos;home&apos;,
+  component: () =&gt; import(/* webpackChunkName: &quot;模块a&quot; */ &apos;@/views/Home.vue&apos;) //可以指定打包的模块名，将相同的模块的路由打包到同一个chunk
+},</code></pre><p><a href="https://router.vuejs.org/zh/guide/advanced/lazy-loading.html#%E6%8A%8A%E7%BB%84%E4%BB%B6%E6%8C%89%E7%BB%84%E5%88%86%E5%9D%97" target="_blank" rel="noopener">https://router.vuejs.org/zh/guide/advanced/lazy-loading.html#%E6%8A%8A%E7%BB%84%E4%BB%B6%E6%8C%89%E7%BB%84%E5%88%86%E5%9D%97</a></p>
+<p>减少全局引入</p>
+<p>减少全局引入的CSS，js，以及某些首页没有使用的组件库；</p>
+<p>这需要我们编写的时候要拆分好各个模块，c s s也是按照不同的功能，不同的模块去拆分，需要覆盖样式的话，也可以在页面里面去import；js也一样，还有某些模块，比如我写的首页其实是没有依赖大型框架的，没有ant-design-vue，但是我们写其他模块的小伙伴引用了（历史原因，我们本来是说要独立几个小项目，后面需要合一起，然后那段时间我请假了，别人合的，此处甩了个锅），而且是在main.js入口文件直接全局引入，虽然是按需引入，但也是增加了第一次加载的chunk体积；</p>
+<pre><code>import { Button,
+         Menu, 
+         Select,
+         //****
 
-<p>最后查看打开谷歌浏览器查看效果：</p>
-<p>可以看到文件大小小了很多，而且响应头里面会有gzip相关字段：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/wwwjun/img/2020/20201117140428.png" alt></p>
-<p>懒加载的话使用了现成的库 vue-lazyload, 安装完直接按照官网说明使用即可：</p>
-<p><a href="https://github.com/hilongjw/vue-lazyload" target="_blank" rel="noopener">https://github.com/hilongjw/vue-lazyload</a></p>
-<p>大功告成。</p>
-<h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a href="https://www.jb51.net/article/146413.htm" target="_blank" rel="noopener">https://www.jb51.net/article/146413.htm</a></p>
-<p><a href="https://github.com/tcoopman/image-webpack-loader" target="_blank" rel="noopener">https://github.com/tcoopman/image-webpack-loader</a></p>
-<p><a href="https://www.webpackjs.com/plugins/compression-webpack-plugin/" target="_blank" rel="noopener">https://www.webpackjs.com/plugins/compression-webpack-plugin/</a></p>
-<p><a href="https://github.com/webpack-contrib/compression-webpack-plugin" target="_blank" rel="noopener">https://github.com/webpack-contrib/compression-webpack-plugin</a></p>
-<p><a href="http://tengine.taobao.org/nginx_docs/cn/docs/http/ngx_http_gzip_static_module.html" target="_blank" rel="noopener">http://tengine.taobao.org/nginx_docs/cn/docs/http/ngx_http_gzip_static_module.html</a></p>
+        } from &apos;ant-design-vue&apos;;//TODO： 组件引用时引入，减小首页加载大小
+Vue.use(Button);
+Vue.use(Menu);
+Vue.use(Select);</code></pre><p>我们需要在使用的页面或组件里面去引入</p>
+<p>某页面的.vue </p>
+<pre><code>import { Button } from &apos;ant-design-vue&apos;
+export default {
+    name:&apos;aptReport&apos;,
+    components:{
+        Button
+    }
+    ///*******
+}</code></pre><p>总的来说，如非必要，尽量避免在入口文件全局引入。</p>
+<p>这样的话，总体体积可能会增加，但是首页的会减小，首页的响应时间也会更快。</p>
 
     </div>
 
@@ -434,7 +472,7 @@
     <strong>本文作者： </strong>Klaus J</li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://wuweijun.cn/2020/11/vue-cli-gzip/" title="Vue项目优化 - 图片压缩，Gzip，懒加载">http://wuweijun.cn/2020/11/vue-cli-gzip/</a>
+    <a href="http://wuweijun.cn/2020/11/vue-cli-moment-ie11-ant-design/" title="VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积">http://wuweijun.cn/2020/11/vue-cli-moment-ie11-ant-design/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
@@ -472,8 +510,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/12/谷歌reCapture的使用/" rel="next" title="谷歌reCapture的使用">
-                  <i class="fa fa-chevron-left"></i> 谷歌reCapture的使用
+                <a href="/2020/11/vue-cli-gzip/" rel="next" title="Vue项目优化 - 图片压缩，Gzip，懒加载">
+                  <i class="fa fa-chevron-left"></i> Vue项目优化 - 图片压缩，Gzip，懒加载
                 </a>
               
             </div>
@@ -481,10 +519,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2020/11/vue-cli-moment-ie11-ant-design/" rel="prev" title="VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积">
-                  VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -523,17 +557,8 @@
 
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <div class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
 
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -690,23 +715,6 @@
 
         </div>
       </div>
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#手动压缩图片"><span class="nav-number">1.</span> <span class="nav-text">手动压缩图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加插件，流程控制自动化压缩"><span class="nav-number">2.</span> <span class="nav-text">添加插件，流程控制自动化压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#image-webpack-loader-插件-压缩图片"><span class="nav-number">2.1.</span> <span class="nav-text">image-webpack-loader 插件 压缩图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加gzip压缩所有静态资源，compression-webpack-plugin"><span class="nav-number">2.2.</span> <span class="nav-text">添加gzip压缩所有静态资源，compression-webpack-plugin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署nginx-开启gzip压缩"><span class="nav-number">3.</span> <span class="nav-text">部署nginx 开启gzip压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接："><span class="nav-number">4.</span> <span class="nav-text">参考链接：</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
 
     </div>
   </aside>

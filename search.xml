@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[VUE 项目优化 - 减小moment体积，IE11支持，ant-Design, 减小首页体积]]></title>
+    <url>%2F2020%2F11%2Fvue-cli-moment-ie11-ant-design%2F</url>
+    <content type="text"><![CDATA[减小moment.js的体积 一般如果项目引入了moment.js或者引入的某个第三方插件包使用了moment.js， 通常情况下，会全部引入了所有语言包，体积过大，我们需按需引入，只打包我们需要的语言包，默认引入英文。 在vue.config.js中添加配置， const webpack = require(&apos;webpack&apos;); module.exports = { // ****** configureWebpack: { // externals:[&apos;moment&apos;], //项目中引用了moment 不能使用 plugins:[ new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn/) //减小moment语言包体积 ], //省略其他配置******* } //省略其他配置******* }配置后，只保留了中文 当然更好的方案是使用现在新的库替代moment，如果情况允许的话，比如：day.js、date-fns；因为有些老的插件，库会依赖moment，因此我们做选择的时候就应该考虑到这点。 适配IE11 antd IE11下有问题 我们项目是由我带着分研发小伙伴加外包一起弄的，我的首页比较简单没有引入大型框架，然而我们其他页面引用了，虽然也是按需引入，但是ant-design本身确实存在些问题。 某些组件，比如manu在 IE下会报错 [Vue warn]: Error in render: “ReferenceError: “Symbol”未定义”； 这是由于antd本身写法是基于ES的Symbol，但是我们打包编译没有把这些高级语法转换成浏览器支持的语法，谷歌火狐都支持了该语法但是IE 并没有，所有我们需要使用Babel去转换。 添加polypill 看我们的小伙伴是直接在main.js里直接引入了core-js/stable 和 regenerator-runtime/runtime， 也没注释，不够优雅，趁现在有点时间，想改改。 import &apos;core-js/stable&apos;; import &apos;regenerator-runtime/runtime&apos;;因为我们使用的是vue的官方脚手架vue-cli，因此去查看官方文档，看到浏览器兼容性这一块，有可配置的项， https://cli.vuejs.org/zh/guide/browser-compatibility.html#browserslist 里面讲得很清楚，我们可以选择配置browserslist， transpileDependencies，polyfills等 有三种方式，根据自身需要去配置： 如果你想直接转换某些第三方没有转换的依赖，比如我们明确得知道了and的包语法需要转译，因此我们可以直接添加配置： transpileDependencies Type: Array&lt;string | RegExp&gt; Default: []默认情况下 babel-loader 会忽略所有 node_modules 中的文件。如果你想要通过 Babel 显式转译一个依赖，可以在这个选项中列出来。 module.exports = { // babel polyfill 适配IE11 transpileDependencies: [ &apos;@ant-design&apos;, &apos;ant-design-vue&apos; ], //****** }这样我们在IE下就不会报错了，已经进行了polyfill。 ant-design 的 icons/lib 包全量引入了，还没处理成功 按照antd官网的issue讨论的结果去尝试了下，没成功🤦‍♂️ https://github.com/ant-design/ant-design/issues/12011 https://github.com/ant-design/ant-design/issues/26371 https://stackoverflow.com/questions/48721290/ant-design-huge-imports 按照各位网友提供的新建了个icons.js export { } 然后配置了别名指向，一直报没有该模块，奇怪，不过我使用的ant-design-vue，没有使用ant-design, 只是也会去引用@ant-design/icons； module.exports = { //... resolve: { alias: { &quot;@ant-design/icons/lib/dist$&quot;: path.resolve(__dirname, &quot;./src/icons.js&quot;) } } };感觉是ant-design-vue的问题，它的官网也写了， 更多讨论可参考：#10353。 ⚠️ 1.2.0 之后我们全量引入了所有图标，导致 ant-design-vue 默认的包体积有一定增加，我们会在不远的未来增加新的 API 来实现图标的按需使用，更多相关讨论可关注：#12011。在此之前，你可以通过来自社区同学的 webpack 插件将图标文件拆分。 然后试了下 这个推荐的插件，原理也只是拆分包而已，并没有减小体积；但也没成功，竟然报react的antd包不存在🤦‍♂️，请求暂停～ 现在还有另外两条路，降低版本，或者等待升级版本。坑 体积大了好几百K，gzip也多了147k。 拆分包，减小首页加载体积 一般的，我们开发的时候就已经根据不同的模块拆分不同的包，路由懒加载等，vue-cli提供了便捷的方式，只需我们在配置路由的时候动态引入： 路由懒加载 { path: &apos;/模块a/home&apos;, name: &apos;home&apos;, component: () =&gt; import(/* webpackChunkName: &quot;模块a&quot; */ &apos;@/views/Home.vue&apos;) //可以指定打包的模块名，将相同的模块的路由打包到同一个chunk },https://router.vuejs.org/zh/guide/advanced/lazy-loading.html#%E6%8A%8A%E7%BB%84%E4%BB%B6%E6%8C%89%E7%BB%84%E5%88%86%E5%9D%97 减少全局引入 减少全局引入的CSS，js，以及某些首页没有使用的组件库； 这需要我们编写的时候要拆分好各个模块，c s s也是按照不同的功能，不同的模块去拆分，需要覆盖样式的话，也可以在页面里面去import；js也一样，还有某些模块，比如我写的首页其实是没有依赖大型框架的，没有ant-design-vue，但是我们写其他模块的小伙伴引用了（历史原因，我们本来是说要独立几个小项目，后面需要合一起，然后那段时间我请假了，别人合的，此处甩了个锅），而且是在main.js入口文件直接全局引入，虽然是按需引入，但也是增加了第一次加载的chunk体积； import { Button, Menu, Select, //**** } from &apos;ant-design-vue&apos;;//TODO： 组件引用时引入，减小首页加载大小 Vue.use(Button); Vue.use(Menu); Vue.use(Select);我们需要在使用的页面或组件里面去引入 某页面的.vue import { Button } from &apos;ant-design-vue&apos; export default { name:&apos;aptReport&apos;, components:{ Button } ///******* }总的来说，如非必要，尽量避免在入口文件全局引入。 这样的话，总体体积可能会增加，但是首页的会减小，首页的响应时间也会更快。]]></content>
+      <categories>
+        <category>技术</category>
+        <category>web</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Vue项目优化 - 图片压缩，Gzip，懒加载]]></title>
     <url>%2F2020%2F11%2Fvue-cli-gzip%2F</url>
     <content type="text"><![CDATA[最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。 手动压缩图片​ 如果选择手动压缩的话，建议不是私密的图片可以选择在线压缩，因为好多本地软件可能都是需要收费的，倒腾破解比较折腾，还不如直接选择在线压缩，免费便捷。 ​ 在线压缩图片网站： https://docsmall.com/image-compress https://tinypng.com/ 添加插件，流程控制自动化压缩image-webpack-loader 插件 压缩图片​ 这个是直接压缩图片的 ​ 安装： 1yarn add image-webpack-loader ​ 注意和URL-loader 以及file-loader的使用：可以查看官网https://github.com/tcoopman/image-webpack-loader ​ 官网说是在file-loader后使用： ​ 安装完成后简单配置如下： 123456789101112file： vue.config.js此处省略一堆chainWebpack: (config)=&gt;&#123; ******** // 开发环境不需要 .test(/\.(png|jpe?g|gif)(\?.*)?$/) //TODO： svg 有点问题 .use(&apos;image-webpack-loader&apos;) .loader(&apos;image-webpack-loader&apos;) .options(&#123; bypassOnDebug: true &#125;) .end(); 添加gzip压缩所有静态资源，compression-webpack-plugin​ 对图片进行压缩后，你可能需要看看是否开启了gzip压缩，nginx的配置如下： ​ 查看nginx 配置文件：nginx -t 然后打开看一眼有没有配置gzip, 不只是gzip on；这句就行了，需要添加文件类型等参数；详见最后一点 3； 如果开启了gzip_static on;需要安装模块ngx_http_gzip_static_module（nginx -V 查看下是否有此模块，可能需要重新编译安装ngin x），可以读取预先压缩好的gz文件，减少请求时的CPU消耗。 *注意：为了要兼容不支持gzip的浏览器，启用gzip_static模块就必须同时保留原始静态文件和gz文件。这样的话，在有大量静态文件的情况下，将会大大增加磁盘空间。我们可以利用nginx的反向代理功能实现只保留gz文件。* 前端vue-cli 添加插件compression-webpack-plugin: 1yarn add compression-webpack-plugin 修改配置文件vue.config.js 123456789101112131415//省略****chainWebpack: (config)=&gt;&#123; // 开发环境不需要gzip if (process.env.NODE_ENV !== &apos;production&apos;) return; config.plugin(&apos;CompressionWebpackPlugin&apos;) .use(new CompressionWebpackPlugin(&#123; // filename: &apos;[path].gz[query]&apos;, algorithm: &apos;gzip&apos;, test: productionGzipExtensions, threshold: 1024, // minRatio: 0.8, // deleteOriginalAssets: true &#125;)); //省略**** &#125;, 具体配置参数可参考：https://www.webpackjs.com/plugins/compression-webpack-plugin/ 压缩后文件大小如下：可以看到gzip压缩50%以上，还是很大的提升。 部署nginx 开启gzip压缩​ 一切准备就绪，部署nginx查看效果，nginx配置如下： 12345678910111213141516171819http &#123; //省略其他配置 gzip on; gzip_static on; # 启用gzip压缩的最小文件；小于设置值的文件将不会被压缩 gzip_min_length 1k; # gzip 压缩级别 1-10 gzip_comp_level 2; # 进行压缩的文件类型。 gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png; # 是否在http header中添加Vary: Accept-Encoding，建议开启 gzip_vary on; gzip_disable &quot;MSIE [1-6].&quot;; //******省略其他配置&#125; 最后查看打开谷歌浏览器查看效果： 可以看到文件大小小了很多，而且响应头里面会有gzip相关字段： 懒加载的话使用了现成的库 vue-lazyload, 安装完直接按照官网说明使用即可： https://github.com/hilongjw/vue-lazyload 大功告成。 参考链接：https://www.jb51.net/article/146413.htm https://github.com/tcoopman/image-webpack-loader https://www.webpackjs.com/plugins/compression-webpack-plugin/ https://github.com/webpack-contrib/compression-webpack-plugin http://tengine.taobao.org/nginx_docs/cn/docs/http/ngx_http_gzip_static_module.html]]></content>
@@ -33,8 +45,8 @@
         <category>生活</category>
       </categories>
       <tags>
-        <tag>生活</tag>
         <tag>日记</tag>
+        <tag>生活</tag>
         <tag>计划</tag>
       </tags>
   </entry>
@@ -63,9 +75,9 @@
         <category>日记</category>
       </categories>
       <tags>
-        <tag>生活</tag>
-        <tag>日记</tag>
         <tag>Hexo</tag>
+        <tag>日记</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
 </search>
