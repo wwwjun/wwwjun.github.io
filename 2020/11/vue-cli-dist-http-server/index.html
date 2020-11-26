@@ -56,19 +56,19 @@
   };
 </script>
 
-  <meta name="description" content="最近开始折腾个人博客，感觉要开始我的演艺生涯了，我竟然倒腾了这么晚，好久没有这样认真了，厉害了~   好饿~赶紧找点吃的去……">
-<meta name="keywords" content="日记,第一次,博客,hexo">
+  <meta name="description" content="初步想法使用官方脚手架vue-cli构建项目的时候，开发完成后，我们都会build一下，打包编译好的代码到dist目录，然后部署到nginx。有时候就想我是不是可以直接使用node服务启动先简单看看，因为有些开发机器不一定都会安装nginx，虽然安装配置nginx也就几分钟的事情，但是为了更便捷快速查看我们发布的代码，考虑使用和我们开发环境一致的node去提供http服务。 本身的开发环境node">
+<meta name="keywords" content="vue-cli,dist,http服务,express,http-proxy-middleware,反向代理,SPA应用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="正式开通博客">
-<meta property="og:url" content="http://wuweijun.cn/2017/11/正式开通博客/index.html">
+<meta property="og:title" content="给Vue-Cli编译后的dist配置简单的http服务">
+<meta property="og:url" content="http://wuweijun.cn/2020/11/vue-cli-dist-http-server/index.html">
 <meta property="og:site_name" content="La Isla Bonita">
-<meta property="og:description" content="最近开始折腾个人博客，感觉要开始我的演艺生涯了，我竟然倒腾了这么晚，好久没有这样认真了，厉害了~   好饿~赶紧找点吃的去……">
+<meta property="og:description" content="初步想法使用官方脚手架vue-cli构建项目的时候，开发完成后，我们都会build一下，打包编译好的代码到dist目录，然后部署到nginx。有时候就想我是不是可以直接使用node服务启动先简单看看，因为有些开发机器不一定都会安装nginx，虽然安装配置nginx也就几分钟的事情，但是为了更便捷快速查看我们发布的代码，考虑使用和我们开发环境一致的node去提供http服务。 本身的开发环境node">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-15T10:36:23.000Z">
+<meta property="og:updated_time" content="2020-11-26T11:51:51.881Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="正式开通博客">
-<meta name="twitter:description" content="最近开始折腾个人博客，感觉要开始我的演艺生涯了，我竟然倒腾了这么晚，好久没有这样认真了，厉害了~   好饿~赶紧找点吃的去……">
-  <link rel="canonical" href="http://wuweijun.cn/2017/11/正式开通博客/">
+<meta name="twitter:title" content="给Vue-Cli编译后的dist配置简单的http服务">
+<meta name="twitter:description" content="初步想法使用官方脚手架vue-cli构建项目的时候，开发完成后，我们都会build一下，打包编译好的代码到dist目录，然后部署到nginx。有时候就想我是不是可以直接使用node服务启动先简单看看，因为有些开发机器不一定都会安装nginx，虽然安装配置nginx也就几分钟的事情，但是为了更便捷快速查看我们发布的代码，考虑使用和我们开发环境一致的node去提供http服务。 本身的开发环境node">
+  <link rel="canonical" href="http://wuweijun.cn/2020/11/vue-cli-dist-http-server/">
 
 
 <script id="page-configurations">
@@ -82,7 +82,7 @@
   };
 </script>
 
-  <title>正式开通博客 | La Isla Bonita</title>
+  <title>给Vue-Cli编译后的dist配置简单的http服务 | La Isla Bonita</title>
   
 
 
@@ -260,7 +260,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wuweijun.cn/2017/11/正式开通博客/">
+    <link itemprop="mainEntityOfPage" href="http://wuweijun.cn/2020/11/vue-cli-dist-http-server/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Klaus J">
@@ -274,7 +274,7 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">正式开通博客
+          <h1 class="post-title" itemprop="name headline">给Vue-Cli编译后的dist配置简单的http服务
 
             
           </h1>
@@ -291,19 +291,11 @@
                 
               
 
-              <time title="创建时间：2017-11-18 21:20:34" itemprop="dateCreated datePublished" datetime="2017-11-18T21:20:34+08:00">2017-11-18</time>
+              <time title="创建时间：2020-11-26 19:47:13 / 修改时间：19:51:51" itemprop="dateCreated datePublished" datetime="2020-11-26T19:47:13+08:00">2020-11-26</time>
             </span>
           
             
 
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-08-15 18:36:23" itemprop="dateModified" datetime="2019-08-15T18:36:23+08:00">2019-08-15</time>
-              </span>
             
           
             <span class="post-meta-item">
@@ -312,7 +304,14 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/日记/" itemprop="url" rel="index"><span itemprop="name">日记</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a></span>
 
                 
                 
@@ -337,7 +336,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>66</span>
+              <span>2.9k</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -347,7 +346,7 @@
               
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               
-              <span>1 分钟</span>
+              <span>3 分钟</span>
             </span>
           
 
@@ -360,8 +359,36 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>  最近开始折腾个人博客，感觉要开始我的演艺生涯了，我竟然倒腾了这么晚，好久没有这样认真了，厉害了~</p>
-<p>  好饿~赶紧找点吃的去……</p>
+        <h2 id="初步想法"><a href="#初步想法" class="headerlink" title="初步想法"></a>初步想法</h2><p>使用官方脚手架vue-cli构建项目的时候，开发完成后，我们都会build一下，打包编译好的代码到dist目录，然后部署到nginx。有时候就想我是不是可以直接使用node服务启动先简单看看，因为有些开发机器不一定都会安装nginx，虽然安装配置nginx也就几分钟的事情，但是为了更便捷快速查看我们发布的代码，考虑使用和我们开发环境一致的node去提供http服务。</p>
+<h2 id="本身的开发环境node服务"><a href="#本身的开发环境node服务" class="headerlink" title="本身的开发环境node服务"></a>本身的开发环境node服务</h2><p>平常使用vue-cli脚手架的时候，很方便直接配置服务端口，和代理转发，就能轻松进行开发；vue-cli已经集成了很多工具包，我们只需要在vue.config.js配置devServer即可，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">  open: process.platform === &apos;darwin&apos;,</span><br><span class="line">  host: &apos;0.0.0.0&apos;,</span><br><span class="line">  port: 3666,</span><br><span class="line">  https: false,</span><br><span class="line">  hot: false,</span><br><span class="line">  // See https://github.com/vuejs/vue-cli/blob/dev/docs/cli-service.md#configuring-proxy</span><br><span class="line">  proxy: &#123;            </span><br><span class="line">    &apos;/api/v1&apos;: &#123;</span><br><span class="line">      target:&apos;https://*****&apos;, //反向代理的API地址</span><br><span class="line">      changeOrigin: true</span><br><span class="line">  	&#125;,     </span><br><span class="line">  &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>其实vue-cli自带了webpack外加webpack的一些插件库提供了各种模块打包，压缩，合并，分割代码，以及一些语法转换等等，包括我们编写完后需要查看页面的http服务，需要访问接口的反向代理，热加载等等，其中我们现在想要做的，其实已经满足，只是没有配置而已，我们可以通过查看我们已经安装的模块:</p>
+<p>然后查查可以简单启动http服务的node框架，有express，http- server等，我们选择了express，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn list ｜ grep express</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用express-提供简单的http服务"><a href="#使用express-提供简单的http服务" class="headerlink" title="使用express 提供简单的http服务"></a>使用express 提供简单的http服务</h2><h3 id="简单的静态http服务"><a href="#简单的静态http服务" class="headerlink" title="简单的静态http服务"></a>简单的静态http服务</h3><p>直接新建一个文件dist-server.js，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var express = require(&apos;express&apos;)</span><br><span class="line">var app = express()</span><br><span class="line"></span><br><span class="line">app.use(express.static(&apos;dist&apos;))</span><br><span class="line"></span><br><span class="line">//监听端口为1587</span><br><span class="line">app.listen(1587, function () &#123;</span><br><span class="line">  console.log(&apos; app listening at http://localhost:1587&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>然后启动服务<strong>node dist-server.js</strong></p>
+<p>访问地址，和nginx一样可以正常使用。如果看不到，可能是目录不对，看看dist目录是否有问题。然后你会看到可以正常访问app的首页了，但是一点击大其他页面就会有问题，这时你就想到了单页面应用需要服务器也要配置支持。</p>
+<h3 id="像nginx配置try-files一样配置可以支持SPA应用"><a href="#像nginx配置try-files一样配置可以支持SPA应用" class="headerlink" title="像nginx配置try_files一样配置可以支持SPA应用"></a>像nginx配置try_files一样配置可以支持SPA应用</h3><p>像之前配置nginx的try_files一样，因为我们是前端路由，需要每次都要从入口文件去索引。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       8080;</span><br><span class="line">        server_name  localhost;</span><br><span class="line"></span><br><span class="line">        // *******</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root   /****/web/dist;  #html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">            try_files  $uri  $uri/ /index.html = 404;</span><br><span class="line">        &#125;</span><br><span class="line">        //******</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们应该也是需要配置的，查了下添加如下几句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var express = require(&apos;express&apos;)</span><br><span class="line">var app = express()</span><br><span class="line"></span><br><span class="line">app.use(express.static(&apos;dist&apos;))</span><br><span class="line"></span><br><span class="line">// 新增</span><br><span class="line">app.get(&apos;*&apos;, function(req, res) &#123;</span><br><span class="line">    res.sendfile(&apos;./dist/index.html&apos;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">//监听端口为1587</span><br><span class="line">app.listen(1587, function () &#123;</span><br><span class="line">  console.log(&apos; app listening at http://localhost:1587&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><a href="https://www.expressjs.com.cn/4x/api.html#req.get" target="_blank" rel="noopener">https://www.expressjs.com.cn/4x/api.html#req.get</a></p>
+</blockquote>
+<p>重新启动服务，可以访问其他页面了，但是你会发现我们的API跨域还需要转发，嗯下一步</p>
+<h3 id="配置API反向代理"><a href="#配置API反向代理" class="headerlink" title="配置API反向代理"></a>配置API反向代理</h3><p>然后看看express如何配置简单的代理，需要安装模块http-proxy-middleware，yarn list | grep proxy 看了下我们已有了，不需要安装。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">var express = require(&apos;express&apos;)</span><br><span class="line">var proxy = require(&apos;http-proxy-middleware&apos;) //新增</span><br><span class="line">var app = express()</span><br><span class="line"></span><br><span class="line">//新增</span><br><span class="line">app.use(&apos;/api&apos;, proxy(&#123;</span><br><span class="line">   target: &apos;https://****.com&apos;, // 目标代理地址</span><br><span class="line">   changeOrigin: true,</span><br><span class="line">   //pathRewrite: &#123;</span><br><span class="line">   //    &apos;^/api&apos;: &apos;&apos;</span><br><span class="line">   //&#125;  </span><br><span class="line">&#125;))</span><br><span class="line"></span><br><span class="line">app.use(express.static(&apos;dist&apos;))</span><br><span class="line"></span><br><span class="line">app.get(&apos;*&apos;, function(req, res) &#123;</span><br><span class="line">    res.sendfile(&apos;./dist/index.html&apos;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">//监听端口为1587</span><br><span class="line">app.listen(1587, function () &#123;</span><br><span class="line">  console.log(&apos; app listening at http://localhost:1587&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><a href="https://github.com/villadora/express-http-proxy#readme" target="_blank" rel="noopener">https://github.com/villadora/express-http-proxy#readme</a></p>
+</blockquote>
+<p>OK，重启服务node dist-server.js，没问题。</p>
 
     </div>
 
@@ -380,7 +407,7 @@
     <strong>本文作者： </strong>Klaus J</li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://wuweijun.cn/2017/11/正式开通博客/" title="正式开通博客">http://wuweijun.cn/2017/11/正式开通博客/</a>
+    <a href="http://wuweijun.cn/2020/11/vue-cli-dist-http-server/" title="给Vue-Cli编译后的dist配置简单的http服务">http://wuweijun.cn/2020/11/vue-cli-dist-http-server/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
@@ -395,11 +422,7 @@
           
           <div class="post-tags">
             
-              <a href="/tags/生活/" rel="tag"><i class="fa fa-tag"></i> 生活</a>
-            
-              <a href="/tags/日记/" rel="tag"><i class="fa fa-tag"></i> 日记</a>
-            
-              <a href="/tags/Hexo/" rel="tag"><i class="fa fa-tag"></i> Hexo</a>
+              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i> web</a>
             
           </div>
         
@@ -422,15 +445,15 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
+                <a href="/2020/11/vue-cli-moment-ie11-ant-design/" rel="next" title="VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积">
+                  <i class="fa fa-chevron-left"></i> VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积
+                </a>
+              
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2017/11/cant-sleep/" rel="prev" title="听说你也睡不着">
-                  听说你也睡不着 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -469,8 +492,17 @@
 
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
 
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -628,6 +660,23 @@
 
         </div>
       </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初步想法"><span class="nav-number">1.</span> <span class="nav-text">初步想法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本身的开发环境node服务"><span class="nav-number">2.</span> <span class="nav-text">本身的开发环境node服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用express-提供简单的http服务"><span class="nav-number">3.</span> <span class="nav-text">使用express 提供简单的http服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的静态http服务"><span class="nav-number">3.1.</span> <span class="nav-text">简单的静态http服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#像nginx配置try-files一样配置可以支持SPA应用"><span class="nav-number">3.2.</span> <span class="nav-text">像nginx配置try_files一样配置可以支持SPA应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置API反向代理"><span class="nav-number">3.3.</span> <span class="nav-text">配置API反向代理</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
     </div>
   </aside>
