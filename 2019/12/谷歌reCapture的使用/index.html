@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/favicon.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="谷歌reCapcha使用-注册谷歌 获取密钥需要翻墙注册一个谷歌账户，然后申请一对公钥密钥，公钥用于前端请求谷歌，密钥用于后台验证。  https://www.google.com/recaptcha/admin">
+<meta name="keywords" content="谷歌,验证码,reCaptcha,web">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谷歌reCapture的使用">
+<meta property="og:url" content="http://wuweijun.cn/2019/12/谷歌reCapture的使用/index.html">
+<meta property="og:site_name" content="La Isla Bonita">
+<meta property="og:description" content="谷歌reCapcha使用-注册谷歌 获取密钥需要翻墙注册一个谷歌账户，然后申请一对公钥密钥，公钥用于前端请求谷歌，密钥用于后台验证。  https://www.google.com/recaptcha/admin">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-11-17T06:44:33.758Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="谷歌reCapture的使用">
+<meta name="twitter:description" content="谷歌reCapcha使用-注册谷歌 获取密钥需要翻墙注册一个谷歌账户，然后申请一对公钥密钥，公钥用于前端请求谷歌，密钥用于后台验证。  https://www.google.com/recaptcha/admin">
+  <link rel="canonical" href="http://wuweijun.cn/2019/12/谷歌reCapture的使用/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>谷歌reCapture的使用 | La Isla Bonita</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">La Isla Bonita</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人何处，连天芳草</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    <div class="reading-progress-bar"></div>
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wuweijun.cn/2019/12/谷歌reCapture的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Klaus J">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/favicon.ico">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="La Isla Bonita">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">谷歌reCapture的使用
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-12-04 20:15:00" itemprop="dateCreated datePublished" datetime="2019-12-04T20:15:00+08:00">2019-12-04</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-17 14:44:33" itemprop="dateModified" datetime="2020-11-17T14:44:33+08:00">2020-11-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>3.4k</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>3 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="谷歌reCapcha使用"><a href="#谷歌reCapcha使用" class="headerlink" title="谷歌reCapcha使用-"></a>谷歌reCapcha使用-</h1><h3 id="注册谷歌-获取密钥"><a href="#注册谷歌-获取密钥" class="headerlink" title="注册谷歌 获取密钥"></a>注册谷歌 获取密钥</h3><p>需要翻墙注册一个谷歌账户，然后申请一对公钥密钥，公钥用于前端请求谷歌，密钥用于后台验证。</p>
+<blockquote>
+<p><a href="https://www.google.com/recaptcha/admin" target="_blank" rel="noopener">https://www.google.com/recaptcha/admin</a></p>
+</blockquote>
+<a id="more"></a>
+<h3 id="选择需要的版本v2-还是v3"><a href="#选择需要的版本v2-还是v3" class="headerlink" title="选择需要的版本v2 还是v3"></a>选择需要的版本v2 还是v3</h3><blockquote>
+<p><a href="https://developers.google.cn/recaptcha/docs/versions?hl=zh-cn" target="_blank" rel="noopener">https://developers.google.cn/recaptcha/docs/versions?hl=zh-cn</a></p>
+</blockquote>
+<p>v3 版本是会返回一个评分，0到1之间，允许你在没有任何用户交互的情况下验证交互是否合法，让你根据分数自己进行提示验证限制爬虫等。</p>
+<p>v2 版本则是提供几种可能，一种是点击按钮，一种则是自动提交，可以是原站点的某个按钮，或者直接用JS直接调用，需要在验证reCaptcha完成后执行回调，网站底部可以隐藏谷歌reCaptcha的徽章，你也可以隐藏。</p>
+<hr>
+<h3 id="v2的使用"><a href="#v2的使用" class="headerlink" title="v2的使用"></a>v2的使用</h3><h5 id="展示谷歌验证插件"><a href="#展示谷歌验证插件" class="headerlink" title="展示谷歌验证插件"></a>展示谷歌验证插件</h5><h6 id="1-自动渲染"><a href="#1-自动渲染" class="headerlink" title="1. 自动渲染"></a>1. 自动渲染</h6><p>重点：class=”g-recaptcha” data-sitekey=”your_site_key”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;reCAPTCHA demo: Simple page&lt;/title&gt;</span><br><span class="line">    &lt;script src=&quot;https://www.google.com/recaptcha/api.js&quot; async defer&gt;&lt;/script&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;form action=&quot;?&quot; method=&quot;POST&quot;&gt;</span><br><span class="line">      &lt;div class=&quot;g-recaptcha&quot; data-sitekey=&quot;your_site_key&quot;&gt;&lt;/div&gt;</span><br><span class="line">      &lt;br/&gt;</span><br><span class="line">      &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;</span><br><span class="line">    &lt;/form&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>： 国内需要用*<em><a href="https://recaptcha.net" target="_blank" rel="noopener">https://recaptcha.net</a> *</em>代替原谷歌地址</p>
+<blockquote>
+<p><a href="https://www.recaptcha.net/recaptcha/api.js" target="_blank" rel="noopener">https://www.recaptcha.net/recaptcha/api.js</a></p>
+</blockquote>
+<h6 id="2-显式渲染"><a href="#2-显式渲染" class="headerlink" title="2. 显式渲染"></a>2. 显式渲染</h6><p>通过指定onload回调函数并向JavaScript资源添加参数，可以延迟渲染。</p>
+<p>在加载reCaptcha js之间需要先定义好回调函数，使用async defer 加载脚本</p>
+<h6 id="3-配置v2"><a href="#3-配置v2" class="headerlink" title="3.配置v2"></a>3.配置v2</h6><p>可以配置语言，主题（dark light），大小 以及各种回调等。<br>具体看官网配置</p>
+<blockquote>
+<p><a href="https://developers.google.cn/recaptcha/docs/display?hl=zh-cn#configuration" target="_blank" rel="noopener">https://developers.google.cn/recaptcha/docs/display?hl=zh-cn#configuration</a></p>
+</blockquote>
+<h6 id="4-js-api"><a href="#4-js-api" class="headerlink" title="4.js api"></a>4.js api</h6><p>接口名称则代表了他们的意思，渲染 重置 获取</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">grecaptcha.render(</span><br><span class="line">container,</span><br><span class="line">parameters</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">grecaptcha.reset(</span><br><span class="line">opt_widget_id</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">grecaptcha.getResponse(</span><br><span class="line">opt_widget_id</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h6 id="服务端验证"><a href="#服务端验证" class="headerlink" title="服务端验证"></a>服务端验证</h6><p><strong>注意</strong>： 国内需要用*<em><a href="https://recaptcha.net" target="_blank" rel="noopener">https://recaptcha.net</a> *</em>代替原谷歌地址</p>
+<blockquote>
+<p><a href="https://www.recaptcha.net/recaptcha/api/siteverify" target="_blank" rel="noopener">https://www.recaptcha.net/recaptcha/api/siteverify</a></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>secret</td>
+<td>必选 注册时拿到的密钥</td>
+</tr>
+<tr>
+<td>response</td>
+<td>必选 前端请求拿到的响应令牌</td>
+</tr>
+<tr>
+<td>remoteip</td>
+<td>可选</td>
+</tr>
+</tbody></table>
+<p>API 响应： success 为true则验证通过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;success&quot;: true|false,</span><br><span class="line">  &quot;challenge_ts&quot;: timestamp,  // timestamp of the challenge load (ISO format yyyy-MM-dd&apos;T&apos;HH:mm:ssZZ)</span><br><span class="line">  &quot;hostname&quot;: string,         // the hostname of the site where the reCAPTCHA was solved</span><br><span class="line">  &quot;error-codes&quot;: [...]        // optional</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>####### 5. 例子</p>
+<ol>
+<li>官网例子</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;reCAPTCHA demo: Explicit render after an onload callback&lt;/title&gt;</span><br><span class="line">    &lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">      var onloadCallback = function() &#123;</span><br><span class="line">        grecaptcha.render(&apos;html_element&apos;, &#123;</span><br><span class="line">          &apos;sitekey&apos; : &apos;your_site_key&apos;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;;</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;form action=&quot;?&quot; method=&quot;POST&quot;&gt;</span><br><span class="line">      &lt;div id=&quot;html_element&quot;&gt;&lt;/div&gt;</span><br><span class="line">      &lt;br&gt;</span><br><span class="line">      &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;</span><br><span class="line">    &lt;/form&gt;</span><br><span class="line">    &lt;script src=&quot;https://www.google.com/recaptcha/api.js?onload=onloadCallback&amp;render=explicit&quot;</span><br><span class="line">        async defer&gt;</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>流程大概是前端加载谷歌验证码的js，发送一个包含公钥的请求得到谷歌响应后，把响应信息按要求发送给后台，后台带着密钥和客户端获取的响应信息请求谷歌的验证API，得到响应。</p>
+<p><strong>注意</strong>： 国内需要用*<em><a href="https://recaptcha.net" target="_blank" rel="noopener">https://recaptcha.net</a> *</em>代替原谷歌地址</p>
+<blockquote>
+<p><a href="https://recaptcha.net/recaptcha/api.js" target="_blank" rel="noopener">https://recaptcha.net/recaptcha/api.js</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://recaptcha.net/recaptcha/api/siteverify" target="_blank" rel="noopener">https://recaptcha.net/recaptcha/api/siteverify</a></p>
+</blockquote>
+<ol start="2">
+<li>框架实现</li>
+</ol>
+<blockquote>
+<p><a href="https://github.com/VividCortex/angular-recaptcha/" target="_blank" rel="noopener">https://github.com/VividCortex/angular-recaptcha/</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://github.com/DethAriel/ng-recaptcha" target="_blank" rel="noopener">https://github.com/DethAriel/ng-recaptcha</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://github.com/DanSnow/vue-recaptcha" target="_blank" rel="noopener">https://github.com/DanSnow/vue-recaptcha</a></p>
+</blockquote>
+<hr>
+<h3 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h3><blockquote>
+<p><a href="https://developers.google.cn/recaptcha/docs/settings?hl=zh-cn" target="_blank" rel="noopener">https://developers.google.cn/recaptcha/docs/settings?hl=zh-cn</a></p>
+</blockquote>
+<hr>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>依赖谷歌强大的机器学习算法，以及谷歌研发的维护，reCaptcha一定程度上还是可以的。目前也有开源破解方案参考,但是随着谷歌的更新其作用肯定是会失效，所以感兴趣的参考就行：</p>
+<blockquote>
+<p><a href="https://github.com/ecthros/uncaptcha2" target="_blank" rel="noopener">https://github.com/ecthros/uncaptcha2</a></p>
+</blockquote>
+<h3 id="风险"><a href="#风险" class="headerlink" title="风险"></a>风险</h3><p>由于使用的谷歌服务 有不可访问的风险，可以通过代理规避。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><blockquote>
+<p><a href="https://blog.csdn.net/baidu_38990811/article/details/83546143" target="_blank" rel="noopener">https://blog.csdn.net/baidu_38990811/article/details/83546143</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://www.jianshu.com/p/c63b78a373ad" target="_blank" rel="noopener">https://www.jianshu.com/p/c63b78a373ad</a></p>
+</blockquote>
+<blockquote>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Klaus J</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://wuweijun.cn/2019/12/谷歌reCapture的使用/" title="谷歌reCapture的使用">http://wuweijun.cn/2019/12/谷歌reCapture的使用/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/reCaptcha/" rel="tag"><i class="fa fa-tag"></i> reCaptcha</a>
+            
+              <a href="/tags/验证码/" rel="tag"><i class="fa fa-tag"></i> 验证码</a>
+            
+          </div>
+        
+
+        
+  <div class="post-widgets">
+    <div class="social-share">
+      
+      
+        <div id="needsharebutton-postbottom">
+          <span class="btn">
+            <i class="fa fa-share-alt" aria-hidden="true"></i>
+          </span>
+        </div>
+      
+    </div>
+  
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/03/get-it-right/" rel="next" title="Get It Right">
+                  <i class="fa fa-chevron-left"></i> Get It Right
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/11/vue-cli-gzip/" rel="prev" title="Vue项目优化 - 图片压缩，Gzip，懒加载">
+                  Vue项目优化 - 图片压缩，Gzip，懒加载 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTg5OS84NDYz"></div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/favicon.ico"
+      alt="Klaus J">
+  <p class="site-author-name" itemprop="name">Klaus J</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=512613704&auto=1&height=32"></iframe>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/wwwjun" title="GitHub &rarr; https://github.com/wwwjun" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:wwwjun@bjtu.edu.cn" title="E-Mail &rarr; mailto:wwwjun@bjtu.edu.cn" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://instagram.com/wwwjun369" title="Instagram &rarr; https://instagram.com/wwwjun369" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://music.163.com/#/playlist?id=2027449074" title="Music &rarr; https://music.163.com/#/playlist?id=2027449074" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>Music</a>
+      </span>
+    
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    
+  
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-block">
+    <div class="links-of-blogroll-title">
+      <i class="fa  fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.liaoxuefeng.com/" title="https://www.liaoxuefeng.com/" rel="noopener" target="_blank">廖雪峰</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhangxinxu.com/" title="https://www.zhangxinxu.com/" rel="noopener" target="_blank">张鑫旭</a>
+        </li>
+      
+    </ul>
+  </div>
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#谷歌reCapcha使用"><span class="nav-number">1.</span> <span class="nav-text">谷歌reCapcha使用-</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注册谷歌-获取密钥"><span class="nav-number">1.0.1.</span> <span class="nav-text">注册谷歌 获取密钥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择需要的版本v2-还是v3"><span class="nav-number">1.0.2.</span> <span class="nav-text">选择需要的版本v2 还是v3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#v2的使用"><span class="nav-number">1.0.3.</span> <span class="nav-text">v2的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#展示谷歌验证插件"><span class="nav-number">1.0.3.0.1.</span> <span class="nav-text">展示谷歌验证插件</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-自动渲染"><span class="nav-number">1.0.3.0.1.1.</span> <span class="nav-text">1. 自动渲染</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-显式渲染"><span class="nav-number">1.0.3.0.1.2.</span> <span class="nav-text">2. 显式渲染</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-配置v2"><span class="nav-number">1.0.3.0.1.3.</span> <span class="nav-text">3.配置v2</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-js-api"><span class="nav-number">1.0.3.0.1.4.</span> <span class="nav-text">4.js api</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#服务端验证"><span class="nav-number">1.0.3.0.1.5.</span> <span class="nav-text">服务端验证</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置"><span class="nav-number">1.0.4.</span> <span class="nav-text">设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安全性"><span class="nav-number">1.0.5.</span> <span class="nav-text">安全性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#风险"><span class="nav-number">1.0.6.</span> <span class="nav-text">风险</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">1.0.7.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heartbeat"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Klaus J</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">18k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+  
+<script src="/lib/needsharebutton/needsharebutton.js"></script>
+<script>
+    pbOptions = {};
+      pbOptions.iconStyle = "box";
+    
+      pbOptions.boxForm = "horizontal";
+    
+      pbOptions.position = "bottomCenter";
+    
+      pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook,Pinterest";
+    
+    new needShareButton('#needsharebutton-postbottom', pbOptions);
+</script>
+
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/reading_progress/reading_progress.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+  <script>
+    (function(d, w, c) {
+      w.ChatraID = 'ZY5WoJrci3opknDg2';
+      var s = d.createElement('script');
+      w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+      };
+      s.async = true;
+      s.src = 'https://call.chatra.io/chatra.js';
+      if (d.head) d.head.appendChild(s);
+    })(document, window, 'Chatra');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+    
+<script>
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/haru01.model.json"},"display":{"position":"right","hOffset":40,"vOffset":0,"width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

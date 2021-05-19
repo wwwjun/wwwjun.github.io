@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[Pm2 管理和自动化部署Node服务]]></title>
+    <url>%2F2021%2F05%2Fpm2-node%2F</url>
+    <content type="text"><![CDATA[最近使用了koa写了个简单的接口服务，然后使用了pm2来启动，管理和守护node服务，官网说PM2是一个守护进程管理器，它将帮助您管理并保持应用程序全天候在线。 功能如下： 行为的配置 源映射支持 容器集成 手表和重载 日志管理 监控 模块系统 最大内存重新加载 集群模式 热重载 开发工作流程 启动脚本 部署工作流程 PAAS兼容 KEYMETRICS监控 API 可以直观的监控所有进程，可以提供微服务支持 https://pm2.keymetrics.io/ https://pm2.keymetrics.io/docs/usage/quick-start/ 安装我使用的是yarn，推荐使用yarn去管理模块。ps：推荐使用nvm去管理node版本。 12yarn global add pm2yarn -v 常用命令启动没有使用webpack等打包工具打包的话，直接使用入口文件即可，koa的项目的index.js 1pm2 start **入口文件** 可以添加响应的参数，常用的–name 指定app名称，– watch 开启监控 查看服务列表1pm2 list 开启集群模式-i max 自动启动最大的节点数 1pm2 start index.js --name app_name -i max 重启1pm2 restart app_name 重载1pm2 reload app_name 删除1Pm2 delete app_name 暂停1pm2 stop app_name pm2 -h 可以看到所有命令 常用如下： ​ start [options] [name|namespace|file|ecosystem|id…] start and daemonize an app​ deploy &lt;file|environment&gt; deploy your json​ startOrRestart start or restart JSON file​ startOrReload start or gracefully reload JSON file​ startOrGracefulReload start or gracefully reload JSON file​ stop [options] &lt;id|name|namespace|all|json|stdin…&gt; stop a process​ restart [options] &lt;id|name|namespace|all|json|stdin…&gt; restart a process​ reload &lt;id|name|namespace|all&gt; reload processes (note that its for app using HTTP/HTTPS) ​ delete|del &lt;name|id|namespace|script|all|json|stdin…&gt; stop and delete a process from pm2 process list 监控1pm2 imonit / monit 日志1pm2 logs ?app_name 更多请看pm2 -h 自动化部署依赖安装git，开发和部署都安装好git和pm2 nvm node 如果是同时使用gitLab 和GitHub，需要配置一下 https://www.jianshu.com/p/c9336965b958 然后在gitlab上创建个仓库存放项目代码 生成配置文件使用如下命令生成配置文件ecosystem.config.js，或者自己手动创建，注意如果多个版本的node环境，需要在执行前制定下使用版本，然后再安装依赖，接着继续编译打包，然后使用配置的是打包后的代码运行，也可以配置个开发的app制定入口文件。 1pm2 ecosystem 内容如下： 12345678910111213141516171819202122module.exports = &#123; apps: [ &#123; script: "dist/main.js", watch: "dist", &#125;, ], deploy: &#123; production: &#123; user: "root", host: "*****", ref: "origin/master", repo: "git@******", path: "/usr/local/***", "pre-deploy-local": "", "post-deploy": "nvm use 14 &amp;&amp; yarn install &amp;&amp; yarn build &amp;&amp; pm2 startOrRestart ecosystem.config.js --env production", "pre-setup": "", &#125;, &#125;,&#125;; 第一次部署1pm2 deploy production setup 然后输入密码即可 更新项目当代码变化后，提交到git后，自动执行下以下命令即可自动部署到制定服务器，但是需要服务器能访问到git仓库地址，有些真实环境可能需要堡垒机啥的可能就比较麻烦。 1pm2 deploy production update 可能遇到的错误命令找不到等，原因就是因为我们使用了版本管理nvm导致找不到命令 因为本地执行 pm2 deploy 使用的 ssh 执行远程命令，非交互式环境，需要将 nvm 的配置放到 ~/.bashrc 的头部： 1234&gt; export NVM_DIR="$HOME/.nvm"&gt; [ -s "$NVM_DIR/nvm.sh" ] &amp;&amp; \. "$NVM_DIR/nvm.sh"&gt; [ -s "$NVM_DIR/bash_completion" ] &amp;&amp; \. "$NVM_DIR/bash_completion"&gt; 然后运行： 12&gt; $ source ~/.bashrc&gt; https://zhuanlan.zhihu.com/p/41235422]]></content>
+      <categories>
+        <category>技术</category>
+        <category>nodejs</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+        <tag>node</tag>
+        <tag>pm2</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[给Vue-Cli编译后的dist配置简单的http服务]]></title>
+    <url>%2F2020%2F11%2Fvue-cli-dist-http-server%2F</url>
+    <content type="text"><![CDATA[初步想法使用官方脚手架vue-cli构建项目的时候，开发完成后，我们都会build一下，打包编译好的代码到dist目录，然后部署到nginx。有时候就想我是不是可以直接使用node服务启动先简单看看，因为有些开发机器不一定都会安装nginx，虽然安装配置nginx也就几分钟的事情，但是为了更便捷快速查看我们发布的代码，考虑使用和我们开发环境一致的node去提供http服务。 本身的开发环境node服务平常使用vue-cli脚手架的时候，很方便直接配置服务端口，和代理转发，就能轻松进行开发；vue-cli已经集成了很多工具包，我们只需要在vue.config.js配置devServer即可， 1234567891011121314devServer: &#123; open: process.platform === &apos;darwin&apos;, host: &apos;0.0.0.0&apos;, port: 3666, https: false, hot: false, // See https://github.com/vuejs/vue-cli/blob/dev/docs/cli-service.md#configuring-proxy proxy: &#123; &apos;/api/v1&apos;: &#123; target:&apos;https://*****&apos;, //反向代理的API地址 changeOrigin: true &#125;, &#125;,&#125;, 其实vue-cli自带了webpack外加webpack的一些插件库提供了各种模块打包，压缩，合并，分割代码，以及一些语法转换等等，包括我们编写完后需要查看页面的http服务，需要访问接口的反向代理，热加载等等，其中我们现在想要做的，其实已经满足，只是没有配置而已，我们可以通过查看我们已经安装的模块: 然后查查可以简单启动http服务的node框架，有express，http- server等，我们选择了express， 1yarn list ｜ grep express 使用express 提供简单的http服务简单的静态http服务直接新建一个文件dist-server.js，内容如下： 123456789var express = require(&apos;express&apos;)var app = express()app.use(express.static(&apos;dist&apos;))//监听端口为1587app.listen(1587, function () &#123; console.log(&apos; app listening at http://localhost:1587&apos;);&#125;); 然后启动服务node dist-server.js 访问地址，和nginx一样可以正常使用。如果看不到，可能是目录不对，看看dist目录是否有问题。然后你会看到可以正常访问app的首页了，但是一点击大其他页面就会有问题，这时你就想到了单页面应用需要服务器也要配置支持。 像nginx配置try_files一样配置可以支持SPA应用像之前配置nginx的try_files一样，因为我们是前端路由，需要每次都要从入口文件去索引。 12345678910111213server &#123; listen 8080; server_name localhost; // ******* location / &#123; root /****/web/dist; #html; index index.html index.htm; try_files $uri $uri/ /index.html = 404; &#125; //******&#125; 我们应该也是需要配置的，查了下添加如下几句： 1234567891011121314var express = require(&apos;express&apos;)var app = express()app.use(express.static(&apos;dist&apos;))// 新增app.get(&apos;*&apos;, function(req, res) &#123; res.sendfile(&apos;./dist/index.html&apos;)&#125;)//监听端口为1587app.listen(1587, function () &#123; console.log(&apos; app listening at http://localhost:1587&apos;);&#125;); https://www.expressjs.com.cn/4x/api.html#req.get 重新启动服务，可以访问其他页面了，但是你会发现我们的API跨域还需要转发，嗯下一步 配置API反向代理然后看看express如何配置简单的代理，需要安装模块http-proxy-middleware，yarn list | grep proxy 看了下我们已有了，不需要安装。 1234567891011121314151617181920212223var express = require(&apos;express&apos;)var proxy = require(&apos;http-proxy-middleware&apos;) //新增var app = express()//新增app.use(&apos;/api&apos;, proxy(&#123; target: &apos;https://****.com&apos;, // 目标代理地址 changeOrigin: true, //pathRewrite: &#123; // &apos;^/api&apos;: &apos;&apos; //&#125; &#125;))app.use(express.static(&apos;dist&apos;))app.get(&apos;*&apos;, function(req, res) &#123; res.sendfile(&apos;./dist/index.html&apos;)&#125;)//监听端口为1587app.listen(1587, function () &#123; console.log(&apos; app listening at http://localhost:1587&apos;);&#125;); https://github.com/villadora/express-http-proxy#readme OK，重启服务node dist-server.js，没问题。]]></content>
+      <categories>
+        <category>技术</category>
+        <category>web</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[VUE 项目优化 - 减小moment体积，IE11支持，ant-Design, 减小首页体积]]></title>
+    <url>%2F2020%2F11%2Fvue-cli-moment-ie11-ant-design%2F</url>
+    <content type="text"><![CDATA[减小moment.js的体积一般如果项目引入了moment.js或者引入的某个第三方插件包使用了moment.js， 通常情况下，会全部引入了所有语言包，体积过大，我们需按需引入，只打包我们需要的语言包，默认引入英文。 在vue.config.js中添加配置， 12345678910111213const webpack = require(&apos;webpack&apos;);module.exports = &#123; // ****** configureWebpack: &#123; // externals:[&apos;moment&apos;], //项目中引用了moment 不能使用 plugins:[ new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn/) //减小moment语言包体积 ], //省略其他配置******* &#125; //省略其他配置*******&#125; 配置后，只保留了中文 当然更好的方案是使用现在新的库替代moment，如果情况允许的话，比如：day.js、date-fns；因为有些老的插件，库会依赖moment，因此我们做选择的时候就应该考虑到这点。 适配IE11 antd IE11下有问题我们项目是由我带着分研发小伙伴加外包一起弄的，我的首页比较简单没有引入大型框架，然而我们其他页面引用了，虽然也是按需引入，但是ant-design本身确实存在些问题。 某些组件，比如manu在 IE下会报错 [Vue warn]: Error in render: “ReferenceError: “Symbol”未定义”； 这是由于antd本身写法是基于ES的Symbol，但是我们打包编译没有把这些高级语法转换成浏览器支持的语法，谷歌火狐都支持了该语法但是IE 并没有，所有我们需要使用Babel去转换。 添加polypill看我们的小伙伴是直接在main.js里直接引入了core-js/stable 和 regenerator-runtime/runtime， 也没注释，不够优雅，趁现在有点时间，想改改。 12import &apos;core-js/stable&apos;;import &apos;regenerator-runtime/runtime&apos;; 因为我们使用的是vue的官方脚手架vue-cli，因此去查看官方文档，看到浏览器兼容性这一块，有可配置的项， https://cli.vuejs.org/zh/guide/browser-compatibility.html#browserslist 里面讲得很清楚，我们可以选择配置browserslist， transpileDependencies，polyfills等 有三种方式，根据自身需要去配置： 如果你想直接转换某些第三方没有转换的依赖，比如我们明确得知道了and的包语法需要转译，因此我们可以直接添加配置： transpileDependencies Type: Array&lt;string | RegExp&gt; Default: [] 默认情况下 babel-loader 会忽略所有 node_modules 中的文件。如果你想要通过 Babel 显式转译一个依赖，可以在这个选项中列出来。 12345678module.exports = &#123; // babel polyfill 适配IE11 transpileDependencies: [ &apos;@ant-design&apos;, &apos;ant-design-vue&apos; ], //******&#125; 这样我们在IE下就不会报错了，已经进行了polyfill。 ant-design 的 icons/lib 包全量引入了，还没处理成功按照antd官网的issue讨论的结果去尝试了下，没成功🤦‍♂️ https://github.com/ant-design/ant-design/issues/12011 https://github.com/ant-design/ant-design/issues/26371 https://stackoverflow.com/questions/48721290/ant-design-huge-imports 按照各位网友提供的新建了个icons.js export { ****} 然后配置了别名指向，一直报没有该模块，奇怪，不过我使用的ant-design-vue，没有使用ant-design, 只是也会去引用@ant-design/icons； 12345678module.exports = &#123; //... resolve: &#123; alias: &#123; &quot;@ant-design/icons/lib/dist$&quot;: path.resolve(__dirname, &quot;./src/icons.js&quot;) &#125; &#125;&#125;; 感觉是ant-design-vue的问题，它的官网也写了， 更多讨论可参考：#10353。 ⚠️ 1.2.0 之后我们全量引入了所有图标，导致 ant-design-vue 默认的包体积有一定增加，我们会在不远的未来增加新的 API 来实现图标的按需使用，更多相关讨论可关注：#12011。在此之前，你可以通过来自社区同学的 webpack 插件将图标文件拆分。 然后试了下 这个推荐的插件，原理也只是拆分包而已，并没有减小体积；但也没成功，竟然报react的antd包不存在🤦‍♂️，请求暂停～ 现在还有另外两条路，降低版本，或者等待升级版本。坑 体积大了好几百K，gzip也多了147k。 拆分包，减小首页加载体积一般的，我们开发的时候就已经根据不同的模块拆分不同的包，路由懒加载等，vue-cli提供了便捷的方式，只需我们在配置路由的时候动态引入： 路由懒加载12345&#123; path: &apos;/模块a/home&apos;, name: &apos;home&apos;, component: () =&gt; import(/* webpackChunkName: &quot;模块a&quot; */ &apos;@/views/Home.vue&apos;) //可以指定打包的模块名，将相同的模块的路由打包到同一个chunk&#125;, https://router.vuejs.org/zh/guide/advanced/lazy-loading.html#%E6%8A%8A%E7%BB%84%E4%BB%B6%E6%8C%89%E7%BB%84%E5%88%86%E5%9D%97 减少全局引入减少全局引入的CSS，js，以及某些首页没有使用的组件库； 这需要我们编写的时候要拆分好各个模块，c s s也是按照不同的功能，不同的模块去拆分，需要覆盖样式的话，也可以在页面里面去import；js也一样，还有某些模块，比如我写的首页其实是没有依赖大型框架的，没有ant-design-vue，但是我们写其他模块的小伙伴引用了（历史原因，我们本来是说要独立几个小项目，后面需要合一起，然后那段时间我请假了，别人合的，此处甩了个锅），而且是在main.js入口文件直接全局引入，虽然是按需引入，但也是增加了第一次加载的chunk体积； 123456789import &#123; Button, Menu, Select, //**** &#125; from &apos;ant-design-vue&apos;;//TODO： 组件引用时引入，减小首页加载大小Vue.use(Button);Vue.use(Menu);Vue.use(Select); 我们需要在使用的页面或组件里面去引入 某页面的.vue 12345678import &#123; Button &#125; from &apos;ant-design-vue&apos;export default &#123; name:&apos;aptReport&apos;, components:&#123; Button &#125; ///*******&#125; 总的来说，如非必要，尽量避免在入口文件全局引入。 这样的话，总体体积可能会增加，但是首页的会减小，首页的响应时间也会更快。]]></content>
+      <categories>
+        <category>技术</category>
+        <category>web</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Vue项目优化 - 图片压缩，Gzip，懒加载]]></title>
+    <url>%2F2020%2F11%2Fvue-cli-gzip%2F</url>
+    <content type="text"><![CDATA[最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。 手动压缩图片​ 如果选择手动压缩的话，建议不是私密的图片可以选择在线压缩，因为好多本地软件可能都是需要收费的，倒腾破解比较折腾，还不如直接选择在线压缩，免费便捷。 ​ 在线压缩图片网站： https://docsmall.com/image-compress https://tinypng.com/ 添加插件，流程控制自动化压缩image-webpack-loader 插件 压缩图片​ 这个是直接压缩图片的 ​ 安装： 1yarn add image-webpack-loader ​ 注意和URL-loader 以及file-loader的使用：可以查看官网https://github.com/tcoopman/image-webpack-loader ​ 官网说是在file-loader后使用： ​ 安装完成后简单配置如下： 123456789101112file： vue.config.js此处省略一堆chainWebpack: (config)=&gt;&#123; ******** // 开发环境不需要 .test(/\.(png|jpe?g|gif)(\?.*)?$/) //TODO： svg 有点问题 .use(&apos;image-webpack-loader&apos;) .loader(&apos;image-webpack-loader&apos;) .options(&#123; bypassOnDebug: true &#125;) .end(); 添加gzip压缩所有静态资源，compression-webpack-plugin​ 对图片进行压缩后，你可能需要看看是否开启了gzip压缩，nginx的配置如下： ​ 查看nginx 配置文件：nginx -t 然后打开看一眼有没有配置gzip, 不只是gzip on；这句就行了，需要添加文件类型等参数；详见最后一点 3； 如果开启了gzip_static on;需要安装模块ngx_http_gzip_static_module（nginx -V 查看下是否有此模块，可能需要重新编译安装ngin x），可以读取预先压缩好的gz文件，减少请求时的CPU消耗。 *注意：为了要兼容不支持gzip的浏览器，启用gzip_static模块就必须同时保留原始静态文件和gz文件。这样的话，在有大量静态文件的情况下，将会大大增加磁盘空间。我们可以利用nginx的反向代理功能实现只保留gz文件。* 前端vue-cli 添加插件compression-webpack-plugin: 1yarn add compression-webpack-plugin 修改配置文件vue.config.js 123456789101112131415//省略****chainWebpack: (config)=&gt;&#123; // 开发环境不需要gzip if (process.env.NODE_ENV !== &apos;production&apos;) return; config.plugin(&apos;CompressionWebpackPlugin&apos;) .use(new CompressionWebpackPlugin(&#123; // filename: &apos;[path].gz[query]&apos;, algorithm: &apos;gzip&apos;, test: productionGzipExtensions, threshold: 1024, // minRatio: 0.8, // deleteOriginalAssets: true &#125;)); //省略**** &#125;, 具体配置参数可参考：https://www.webpackjs.com/plugins/compression-webpack-plugin/ 压缩后文件大小如下：可以看到gzip压缩50%以上，还是很大的提升。 部署nginx 开启gzip压缩​ 一切准备就绪，部署nginx查看效果，nginx配置如下： 12345678910111213141516171819http &#123; //省略其他配置 gzip on; gzip_static on; # 启用gzip压缩的最小文件；小于设置值的文件将不会被压缩 gzip_min_length 1k; # gzip 压缩级别 1-10 gzip_comp_level 2; # 进行压缩的文件类型。 gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png; # 是否在http header中添加Vary: Accept-Encoding，建议开启 gzip_vary on; gzip_disable &quot;MSIE [1-6].&quot;; //******省略其他配置&#125; 最后查看打开谷歌浏览器查看效果： 可以看到文件大小小了很多，而且响应头里面会有gzip相关字段： 懒加载的话使用了现成的库 vue-lazyload, 安装完直接按照官网说明使用即可： https://github.com/hilongjw/vue-lazyload 大功告成。 参考链接：https://www.jb51.net/article/146413.htm https://github.com/tcoopman/image-webpack-loader https://www.webpackjs.com/plugins/compression-webpack-plugin/ https://github.com/webpack-contrib/compression-webpack-plugin http://tengine.taobao.org/nginx_docs/cn/docs/http/ngx_http_gzip_static_module.html]]></content>
+      <categories>
+        <category>技术</category>
+        <category>web</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[谷歌reCapture的使用]]></title>
+    <url>%2F2019%2F12%2F%E8%B0%B7%E6%AD%8CreCapture%E7%9A%84%E4%BD%BF%E7%94%A8%2F</url>
+    <content type="text"><![CDATA[谷歌reCapcha使用-注册谷歌 获取密钥需要翻墙注册一个谷歌账户，然后申请一对公钥密钥，公钥用于前端请求谷歌，密钥用于后台验证。 https://www.google.com/recaptcha/admin 选择需要的版本v2 还是v3 https://developers.google.cn/recaptcha/docs/versions?hl=zh-cn v3 版本是会返回一个评分，0到1之间，允许你在没有任何用户交互的情况下验证交互是否合法，让你根据分数自己进行提示验证限制爬虫等。 v2 版本则是提供几种可能，一种是点击按钮，一种则是自动提交，可以是原站点的某个按钮，或者直接用JS直接调用，需要在验证reCaptcha完成后执行回调，网站底部可以隐藏谷歌reCaptcha的徽章，你也可以隐藏。 v2的使用展示谷歌验证插件1. 自动渲染重点：class=”g-recaptcha” data-sitekey=”your_site_key” 12345678910111213&lt;html&gt; &lt;head&gt; &lt;title&gt;reCAPTCHA demo: Simple page&lt;/title&gt; &lt;script src=&quot;https://www.google.com/recaptcha/api.js&quot; async defer&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;form action=&quot;?&quot; method=&quot;POST&quot;&gt; &lt;div class=&quot;g-recaptcha&quot; data-sitekey=&quot;your_site_key&quot;&gt;&lt;/div&gt; &lt;br/&gt; &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt; &lt;/form&gt; &lt;/body&gt;&lt;/html&gt; 注意： 国内需要用*https://recaptcha.net *代替原谷歌地址 https://www.recaptcha.net/recaptcha/api.js 2. 显式渲染通过指定onload回调函数并向JavaScript资源添加参数，可以延迟渲染。 在加载reCaptcha js之间需要先定义好回调函数，使用async defer 加载脚本 3.配置v2可以配置语言，主题（dark light），大小 以及各种回调等。具体看官网配置 https://developers.google.cn/recaptcha/docs/display?hl=zh-cn#configuration 4.js api接口名称则代表了他们的意思，渲染 重置 获取 123456789101112grecaptcha.render(container,parameters)grecaptcha.reset(opt_widget_id)grecaptcha.getResponse(opt_widget_id) 服务端验证注意： 国内需要用*https://recaptcha.net *代替原谷歌地址 https://www.recaptcha.net/recaptcha/api/siteverify 参数 说明 secret 必选 注册时拿到的密钥 response 必选 前端请求拿到的响应令牌 remoteip 可选 API 响应： success 为true则验证通过 123456&#123; &quot;success&quot;: true|false, &quot;challenge_ts&quot;: timestamp, // timestamp of the challenge load (ISO format yyyy-MM-dd&apos;T&apos;HH:mm:ssZZ) &quot;hostname&quot;: string, // the hostname of the site where the reCAPTCHA was solved &quot;error-codes&quot;: [...] // optional&#125; ####### 5. 例子 官网例子 12345678910111213141516171819202122&lt;html&gt; &lt;head&gt; &lt;title&gt;reCAPTCHA demo: Explicit render after an onload callback&lt;/title&gt; &lt;script type=&quot;text/javascript&quot;&gt; var onloadCallback = function() &#123; grecaptcha.render(&apos;html_element&apos;, &#123; &apos;sitekey&apos; : &apos;your_site_key&apos; &#125;); &#125;; &lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;form action=&quot;?&quot; method=&quot;POST&quot;&gt; &lt;div id=&quot;html_element&quot;&gt;&lt;/div&gt; &lt;br&gt; &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt; &lt;/form&gt; &lt;script src=&quot;https://www.google.com/recaptcha/api.js?onload=onloadCallback&amp;render=explicit&quot; async defer&gt; &lt;/script&gt; &lt;/body&gt;&lt;/html&gt; 流程大概是前端加载谷歌验证码的js，发送一个包含公钥的请求得到谷歌响应后，把响应信息按要求发送给后台，后台带着密钥和客户端获取的响应信息请求谷歌的验证API，得到响应。 注意： 国内需要用*https://recaptcha.net *代替原谷歌地址 https://recaptcha.net/recaptcha/api.js https://recaptcha.net/recaptcha/api/siteverify 框架实现 https://github.com/VividCortex/angular-recaptcha/ https://github.com/DethAriel/ng-recaptcha https://github.com/DanSnow/vue-recaptcha 设置 https://developers.google.cn/recaptcha/docs/settings?hl=zh-cn 安全性依赖谷歌强大的机器学习算法，以及谷歌研发的维护，reCaptcha一定程度上还是可以的。目前也有开源破解方案参考,但是随着谷歌的更新其作用肯定是会失效，所以感兴趣的参考就行： https://github.com/ecthros/uncaptcha2 风险由于使用的谷歌服务 有不可访问的风险，可以通过代理规避。 参考 https://blog.csdn.net/baidu_38990811/article/details/83546143 https://www.jianshu.com/p/c63b78a373ad]]></content>
+      <categories>
+        <category>技术</category>
+        <category>web</category>
+      </categories>
+      <tags>
+        <tag>reCaptcha</tag>
+        <tag>验证码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Get It Right]]></title>
+    <url>%2F2018%2F03%2Fget-it-right%2F</url>
+    <content type="text"><![CDATA[按照新历算的话，2018年不知不觉已经过了三个多月了，虽然我对我来说一般过了春节才算是新的一年的开始，然而春节也过去了好久了。前段时间一直想写个总结和新的一年的机会来着，但是颓废了一段时间，懒。 过去的一年发生了很多事情，无论工作上还是生活上，不能说收获很大吧，但是还是成长了。只是希望自己今年好好学习积累，过得更好吧。 现在不是很想去写一些东西，还没想好怎么写，还是先写下我今年要做的事情吧： 1.报驾校，学车2.坚持健身，运动3.提高专业技能4.规律作息，早睡早起，不失眠，注意养生5.少说一些欠打的话，可以幽默但尽量不要建立在别人的痛苦之上哈哈6.练习普通话发音，把容易读错或者读不准的词记下来7.学习理财，基金股票等8.多吃水果,多喝水，喝茶9.有些病得治，至少弄清楚如何去改善10.坚持学习摄影11.再长点肉 Get it right~]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>生活</tag>
+        <tag>日记</tag>
+        <tag>计划</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[听说你也睡不着]]></title>
+    <url>%2F2017%2F11%2Fcant-sleep%2F</url>
+    <content type="text"><![CDATA[习惯了晚睡，晚起，有时候甚至会失眠到几点。有时候很累很困，但是一回到家，打开电脑却一点也不困了，有时候躺床上听了好久的歌曲也没睡着。 慢慢地开始探索了好多电台节目等；刚折腾好博客也不知道写些什么，就来推荐下我收藏的一些电台、主播吧。 1. 音乐电台： 睡不着电台网易云音乐搜索或者点击下面的链接，白无常白总的声音真的很好听，很治愈，有点类似台湾女生那样子。http://music.163.com/#/user/home?id=246202585 晓苏电台网易云音乐搜索或者点击下面的链接，晓苏的声音也是很好听，讲得大部分也都是情感故事。Hey 你好吗？我是晓苏……http://music.163.com/#/radio/?id=203&amp;userid=48170583 蕊希电台网易云音乐搜索或者点击下面的链接，同样的就不啰嗦了。http://music.163.com/#/radio/?id=618058&amp;userid=48170583 2. 心理FM接下来推进一下很久以前我就接触的心理FM应该是上大学那会，或者高三？不太记得具体日期了，但是有句话却很印象深刻，那就是：世界和我爱着你，那时候就喜欢听阡语陌路主播的，现在好像她很少在心理FM更新了，微信公众号：阡陌对你说晚安(Lisa_voice) 还有两个桑田和潇湘也不错，很久没有听其他人的了或许你们可以自己去发现美的声音。 3. 助眠白噪音 下雨声小时候，我就非常喜欢听下雨的声音，雨水轻轻敲打在屋顶，雨水滴滴犹如我们的心跳，呼吸，思念。下雨天就是比较适合睡觉，那时候睡的很安逸，很舒爽。 聆听雨声♬不知不觉 我都在祈盼雨天http://music.163.com/#/radio/?id=335503062&amp;userid=48170583下雨声「助眠白噪音」http://music.163.com/#/radio/?id=347586063&amp;userid=48170583 4. ASMR最后这个厉害了，传说中的颅内高潮（捂脸ing）……其实就是掏耳朵而已哈哈哈 ASMR (Autonomous Sensory Meridian Response)，中文译名“自发性知觉经络反应”，是一个用于描述感知现象的新词，其特征是：对视觉、听觉、触觉、嗅觉或者感知上的刺激而使人在颅内、头皮、背部或身体其他范围内产生一种独特的、令人愉悦的刺激感。(摘自百度百科） 简单点讲就是用各种东西弄出来声音，这些声音让你听了很舒服，放松之类的，有些声音很像别的声音然后你主观意识下就很放松等等，种类也很多。可以自行百度下。 现在好像也挺火的，好像很多直播平台现在也有很多这样的直播，很好地结合了类似哔哩哔哩这种二次元御宅文化等。 废话不多说还是直接正题吧，我关注的一些ASMR主播吧 PPOMOyoutube上比较火的，好像是韩国人，双胞胎好像，技能包众多，还经常直播，有韩语英语日语等。国内好像也有很多人转，可以搜搜电台或者主播。 youtubehttps://www.youtube.com/watch?v=0eTx6bkOEls如果你翻不了墙的话可以搜搜国内的音乐平台都要搬运 网易云搬运如果你翻不了墙的话http://music.163.com/#/radio/?id=3059008&amp;userid=48170583 FrivolousFox ASMR也是国外的，声音很性感哈哈哈，用大司马的话说很舒服哈哈哈哈。助眠，不是那种日本风格的那种。 youtubehttps://www.youtube.com/channel/UCoNfsDH8sZe13u7rSxaEBkw这个我也没有发现有专门搬运的，我一般翻墙上youtube，有些电台可能包含一两个。 国内主播的话推荐下少寒 少寒Shine网易云有电台，声音很漂亮人好听，特别喜欢她轻语时嘴唇有点黏黏的感觉，她又在yy直播。 网易云音乐http://music.163.com/#/radio/?id=345640053&amp;userid=48170583 yy直播http://www.yy.com/13739310/13739310?tempId=16777217 还有你可以上哔哩哔哩看下，也有一些。这里就不推荐了，我也很少上。洗洗睡去了。今天感恩节，贴下微信发的朋友圈： 没有谁有义务帮助你，永怀一颗感恩的心、感谢生命中出现的每一个人，winter is coming、not today！]]></content>
+      <categories>
+        <category>生活</category>
+        <category>推荐</category>
+      </categories>
+      <tags>
+        <tag>ASMR</tag>
+        <tag>主播</tag>
+        <tag>电台</tag>
+        <tag>推荐</tag>
+        <tag>睡不着</tag>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[正式开通博客]]></title>
+    <url>%2F2017%2F11%2F%E6%AD%A3%E5%BC%8F%E5%BC%80%E9%80%9A%E5%8D%9A%E5%AE%A2%2F</url>
+    <content type="text"><![CDATA[最近开始折腾个人博客，感觉要开始我的演艺生涯了，我竟然倒腾了这么晚，好久没有这样认真了，厉害了~ 好饿~赶紧找点吃的去……]]></content>
+      <categories>
+        <category>日记</category>
+      </categories>
+      <tags>
+        <tag>生活</tag>
+        <tag>日记</tag>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+</search>

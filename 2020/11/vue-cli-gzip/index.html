@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/favicon.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。">
+<meta name="keywords" content="web开发,gzip,网站优化,webpack,image-webpack-loader,compression-webpack-plugin,vue-cli">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue项目优化 - 图片压缩，Gzip，懒加载">
+<meta property="og:url" content="http://wuweijun.cn/2020/11/vue-cli-gzip/index.html">
+<meta property="og:site_name" content="La Isla Bonita">
+<meta property="og:description" content="最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wwwjun/img/202020201116110405.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wwwjun/img/2020/20201117140428.png">
+<meta property="og:updated_time" content="2020-11-24T03:30:25.874Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue项目优化 - 图片压缩，Gzip，懒加载">
+<meta name="twitter:description" content="最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/wwwjun/img/202020201116110405.png">
+  <link rel="canonical" href="http://wuweijun.cn/2020/11/vue-cli-gzip/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Vue项目优化 - 图片压缩，Gzip，懒加载 | La Isla Bonita</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">La Isla Bonita</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人何处，连天芳草</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    <div class="reading-progress-bar"></div>
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wuweijun.cn/2020/11/vue-cli-gzip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Klaus J">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/favicon.ico">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="La Isla Bonita">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Vue项目优化 - 图片压缩，Gzip，懒加载
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-11-16 12:23:33" itemprop="dateCreated datePublished" datetime="2020-11-16T12:23:33+08:00">2020-11-16</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-24 11:30:25" itemprop="dateModified" datetime="2020-11-24T11:30:25+08:00">2020-11-24</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>2.9k</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>3 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近有个项目做了个类似宣传页面的首页，放了一堆图片，在本地开发的时候还好，部署发现图片好大好多，影响速度，就想着优化下，压缩一下图片，再做个图片懒加载。</p>
+<a id="more"></a>
+<h2 id="手动压缩图片"><a href="#手动压缩图片" class="headerlink" title="手动压缩图片"></a>手动压缩图片</h2><p>​        如果选择手动压缩的话，建议不是私密的图片可以选择在线压缩，因为好多本地软件可能都是需要收费的，倒腾破解比较折腾，还不如直接选择在线压缩，免费便捷。</p>
+<p>​        在线压缩图片网站： </p>
+<ol>
+<li><p><a href="https://docsmall.com/image-compress" target="_blank" rel="noopener">https://docsmall.com/image-compress</a></p>
+</li>
+<li><p><a href="https://tinypng.com/" target="_blank" rel="noopener">https://tinypng.com/</a></p>
+</li>
+</ol>
+<h2 id="添加插件，流程控制自动化压缩"><a href="#添加插件，流程控制自动化压缩" class="headerlink" title="添加插件，流程控制自动化压缩"></a>添加插件，流程控制自动化压缩</h2><h3 id="image-webpack-loader-插件-压缩图片"><a href="#image-webpack-loader-插件-压缩图片" class="headerlink" title="image-webpack-loader 插件 压缩图片"></a>image-webpack-loader 插件 压缩图片</h3><p>​    这个是直接压缩图片的</p>
+<p>​    安装： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add image-webpack-loader</span><br></pre></td></tr></table></figure>
+
+<p>​    注意和URL-loader 以及file-loader的使用：可以查看官网<a href="https://github.com/tcoopman/image-webpack-loader" target="_blank" rel="noopener">https://github.com/tcoopman/image-webpack-loader</a></p>
+<p>​    官网说是在file-loader后使用：</p>
+<p>​    安装完成后简单配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">file： vue.config.js</span><br><span class="line">此处省略一堆</span><br><span class="line">chainWebpack: (config)=&gt;&#123;</span><br><span class="line">        ********</span><br><span class="line">        // 开发环境不需要</span><br><span class="line">            .test(/\.(png|jpe?g|gif)(\?.*)?$/) //TODO： svg 有点问题 </span><br><span class="line">            .use(&apos;image-webpack-loader&apos;)</span><br><span class="line">            .loader(&apos;image-webpack-loader&apos;)</span><br><span class="line">            .options(&#123;</span><br><span class="line">            bypassOnDebug: true</span><br><span class="line">            &#125;)</span><br><span class="line">            .end();</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加gzip压缩所有静态资源，compression-webpack-plugin"><a href="#添加gzip压缩所有静态资源，compression-webpack-plugin" class="headerlink" title="添加gzip压缩所有静态资源，compression-webpack-plugin"></a>添加gzip压缩所有静态资源，compression-webpack-plugin</h3><p>​    对图片进行压缩后，你可能需要看看是否开启了gzip压缩，nginx的配置如下：</p>
+<p>​    查看nginx 配置文件：nginx -t 然后打开看一眼有没有配置gzip, 不只是gzip on；这句就行了，需要添加文件类型等参数；详见最后一点 3；</p>
+<p>如果开启了gzip_static on;需要安装模块ngx_http_gzip_static_module（nginx -V 查看下是否有此模块，可能需要重新编译安装ngin x），可以读取预先压缩好的gz文件，减少请求时的CPU消耗。</p>
+<p>*<u>注意</u>：为了要兼容不支持gzip的浏览器，启用gzip_static模块就必须同时保留原始静态文件和gz文件。这样的话，在有大量静态文件的情况下，将会大大增加磁盘空间。我们可以利用nginx的反向代理功能实现只保留gz文件。*</p>
+<p><strong>前端vue-cli 添加插件compression-webpack-plugin:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add compression-webpack-plugin</span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件vue.config.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//省略****</span><br><span class="line">chainWebpack: (config)=&gt;&#123;</span><br><span class="line">      // 开发环境不需要gzip </span><br><span class="line">      if (process.env.NODE_ENV !== &apos;production&apos;) return;</span><br><span class="line">      config.plugin(&apos;CompressionWebpackPlugin&apos;)</span><br><span class="line">          .use(new CompressionWebpackPlugin(&#123;</span><br><span class="line">              // filename: &apos;[path].gz[query]&apos;,</span><br><span class="line">              algorithm: &apos;gzip&apos;,</span><br><span class="line">              test: productionGzipExtensions,</span><br><span class="line">              threshold: 1024,</span><br><span class="line">              // minRatio: 0.8, </span><br><span class="line">              // deleteOriginalAssets: true  </span><br><span class="line">          &#125;));</span><br><span class="line">      //省略****</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+
+<p>具体配置参数可参考：<a href="https://www.webpackjs.com/plugins/compression-webpack-plugin/" target="_blank" rel="noopener">https://www.webpackjs.com/plugins/compression-webpack-plugin/</a></p>
+<p>压缩后文件大小如下：可以看到gzip压缩50%以上，还是很大的提升。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wwwjun/img/202020201116110405.png" alt></p>
+<h2 id="部署nginx-开启gzip压缩"><a href="#部署nginx-开启gzip压缩" class="headerlink" title="部署nginx 开启gzip压缩"></a>部署nginx 开启gzip压缩</h2><p>​    一切准备就绪，部署nginx查看效果，nginx配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">		//省略其他配置</span><br><span class="line">		gzip  on;</span><br><span class="line">    gzip_static on;</span><br><span class="line">    # 启用gzip压缩的最小文件；小于设置值的文件将不会被压缩</span><br><span class="line">    gzip_min_length 1k;</span><br><span class="line"></span><br><span class="line">    # gzip 压缩级别 1-10</span><br><span class="line">    gzip_comp_level 2;</span><br><span class="line"></span><br><span class="line">    # 进行压缩的文件类型。</span><br><span class="line"></span><br><span class="line">    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;</span><br><span class="line"></span><br><span class="line">    # 是否在http header中添加Vary: Accept-Encoding，建议开启</span><br><span class="line">    gzip_vary on;</span><br><span class="line">    gzip_disable &quot;MSIE [1-6].&quot;;</span><br><span class="line">    //******省略其他配置</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后查看打开谷歌浏览器查看效果：</p>
+<p>可以看到文件大小小了很多，而且响应头里面会有gzip相关字段：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wwwjun/img/2020/20201117140428.png" alt></p>
+<p>懒加载的话使用了现成的库 vue-lazyload, 安装完直接按照官网说明使用即可：</p>
+<p><a href="https://github.com/hilongjw/vue-lazyload" target="_blank" rel="noopener">https://github.com/hilongjw/vue-lazyload</a></p>
+<p>大功告成。</p>
+<h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a href="https://www.jb51.net/article/146413.htm" target="_blank" rel="noopener">https://www.jb51.net/article/146413.htm</a></p>
+<p><a href="https://github.com/tcoopman/image-webpack-loader" target="_blank" rel="noopener">https://github.com/tcoopman/image-webpack-loader</a></p>
+<p><a href="https://www.webpackjs.com/plugins/compression-webpack-plugin/" target="_blank" rel="noopener">https://www.webpackjs.com/plugins/compression-webpack-plugin/</a></p>
+<p><a href="https://github.com/webpack-contrib/compression-webpack-plugin" target="_blank" rel="noopener">https://github.com/webpack-contrib/compression-webpack-plugin</a></p>
+<p><a href="http://tengine.taobao.org/nginx_docs/cn/docs/http/ngx_http_gzip_static_module.html" target="_blank" rel="noopener">http://tengine.taobao.org/nginx_docs/cn/docs/http/ngx_http_gzip_static_module.html</a></p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Klaus J</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://wuweijun.cn/2020/11/vue-cli-gzip/" title="Vue项目优化 - 图片压缩，Gzip，懒加载">http://wuweijun.cn/2020/11/vue-cli-gzip/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i> web</a>
+            
+          </div>
+        
+
+        
+  <div class="post-widgets">
+    <div class="social-share">
+      
+      
+        <div id="needsharebutton-postbottom">
+          <span class="btn">
+            <i class="fa fa-share-alt" aria-hidden="true"></i>
+          </span>
+        </div>
+      
+    </div>
+  
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/12/谷歌reCapture的使用/" rel="next" title="谷歌reCapture的使用">
+                  <i class="fa fa-chevron-left"></i> 谷歌reCapture的使用
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/11/vue-cli-moment-ie11-ant-design/" rel="prev" title="VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积">
+                  VUE 项目优化  - 减小moment体积，IE11支持，ant-Design, 减小首页体积 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTg5OS84NDYz"></div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/favicon.ico"
+      alt="Klaus J">
+  <p class="site-author-name" itemprop="name">Klaus J</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=512613704&auto=1&height=32"></iframe>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/wwwjun" title="GitHub &rarr; https://github.com/wwwjun" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:wwwjun@bjtu.edu.cn" title="E-Mail &rarr; mailto:wwwjun@bjtu.edu.cn" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://instagram.com/wwwjun369" title="Instagram &rarr; https://instagram.com/wwwjun369" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://music.163.com/#/playlist?id=2027449074" title="Music &rarr; https://music.163.com/#/playlist?id=2027449074" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>Music</a>
+      </span>
+    
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    
+  
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-block">
+    <div class="links-of-blogroll-title">
+      <i class="fa  fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.liaoxuefeng.com/" title="https://www.liaoxuefeng.com/" rel="noopener" target="_blank">廖雪峰</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhangxinxu.com/" title="https://www.zhangxinxu.com/" rel="noopener" target="_blank">张鑫旭</a>
+        </li>
+      
+    </ul>
+  </div>
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#手动压缩图片"><span class="nav-number">1.</span> <span class="nav-text">手动压缩图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加插件，流程控制自动化压缩"><span class="nav-number">2.</span> <span class="nav-text">添加插件，流程控制自动化压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#image-webpack-loader-插件-压缩图片"><span class="nav-number">2.1.</span> <span class="nav-text">image-webpack-loader 插件 压缩图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加gzip压缩所有静态资源，compression-webpack-plugin"><span class="nav-number">2.2.</span> <span class="nav-text">添加gzip压缩所有静态资源，compression-webpack-plugin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署nginx-开启gzip压缩"><span class="nav-number">3.</span> <span class="nav-text">部署nginx 开启gzip压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接："><span class="nav-number">4.</span> <span class="nav-text">参考链接：</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heartbeat"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Klaus J</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">18k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+  
+<script src="/lib/needsharebutton/needsharebutton.js"></script>
+<script>
+    pbOptions = {};
+      pbOptions.iconStyle = "box";
+    
+      pbOptions.boxForm = "horizontal";
+    
+      pbOptions.position = "bottomCenter";
+    
+      pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook,Pinterest";
+    
+    new needShareButton('#needsharebutton-postbottom', pbOptions);
+</script>
+
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/reading_progress/reading_progress.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+  <script>
+    (function(d, w, c) {
+      w.ChatraID = 'ZY5WoJrci3opknDg2';
+      var s = d.createElement('script');
+      w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+      };
+      s.async = true;
+      s.src = 'https://call.chatra.io/chatra.js';
+      if (d.head) d.head.appendChild(s);
+    })(document, window, 'Chatra');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+    
+<script>
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/haru01.model.json"},"display":{"position":"right","hOffset":40,"vOffset":0,"width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7},"log":false});</script></body>
+</html>
