@@ -71,8 +71,8 @@
         <category>生活</category>
       </categories>
       <tags>
-        <tag>日记</tag>
         <tag>生活</tag>
+        <tag>日记</tag>
         <tag>计划</tag>
       </tags>
   </entry>
@@ -85,12 +85,12 @@
         <category>推荐</category>
       </categories>
       <tags>
-        <tag>生活</tag>
         <tag>ASMR</tag>
         <tag>主播</tag>
         <tag>电台</tag>
         <tag>推荐</tag>
         <tag>睡不着</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -101,9 +101,9 @@
         <category>日记</category>
       </categories>
       <tags>
-        <tag>Hexo</tag>
-        <tag>日记</tag>
         <tag>生活</tag>
+        <tag>日记</tag>
+        <tag>Hexo</tag>
       </tags>
   </entry>
 </search>
